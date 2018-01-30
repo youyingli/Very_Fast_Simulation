@@ -1,26 +1,31 @@
 #!/usr/bin/env python
+
 from optparse import OptionParser
 import os, sys
-
 
 def Option_Parser(argv):
 
     usage='usage: %prog [options] arg\n'
-    usage+='This is script which can automatically produce a crab config file depending on the option you choose.\n'
-    usage+='Strongly recommend check if any wrong statement is included in this config file produced\n'
+    usage+='The script handles the MC generation by parallel calculation.\n'
+    usage+='It can automatically produce some scripts for given MCTool and submit to batch system.\n'
+    usage+='For more information, please see README !!!\n'
     parser = OptionParser(usage=usage)
 
     parser.add_option('-i', '--input',
             type='str', dest='input', default='myMCgenerated',
             help='Input is .txt file contained mc sample names you want to generate. These names must be the same as cards'
-    )
+            )
     parser.add_option('-o', '--outdir',
             type='str', dest='outdir', default='/afs/cern.ch/user/<Y>/<YOURNAME>',
             help='Output directory'
-    )
+            )
     parser.add_option('-t', '--tag',
             type='str', dest='tag', default='Standard',
             help='tag output MC samples'
+            )
+    parser.add_option('-q', '--queue',
+            type='str', dest='queue', default='8nh',
+            help='Queue for batch system'
             )
     parser.add_option('--madgraph5_pythia8',
             action='store_true', dest='madgraph5_pythia8',
@@ -42,15 +47,17 @@ def decode_txt (filename) :
 
     file = open(filename, 'r')
     return file.readlines()
-def batch_job_submitter (script_list, query) :
 
-
+def batch_job_submitter (script_list, queue = '8nh', outlog = '/tmp/junk/log') :
+    for script in script_list :
+        os.system('bsub -q %s -o %s %s', (queue, script.replace('.sh', '.log'), script))
 
 def bjobs_setup (argv):
 
     package_path = os.environ.get('VFSIM_PACKAGE_PATH')
     options = Option_Parser(argv)
 
+    #Madgraph5 + Pythia8
     if options.madgraph5_pythia8 :
         bjob_list = list()
         import madgraph5_pythia8_plugin
@@ -91,16 +98,7 @@ def bjobs_setup (argv):
                         bjob_script.write('rm -rf %s' % tmp_dir)
                 os.system('chmod 755 %s/run_job%d.sh' % (mc_job, int(i)))
                 bjob_list.append('%s/run_job%d.sh' % (mc_job, int(i)))
-
-
+        batch_job_submitter (bjob_list, options.queue)
 
 if __name__ == '__main__' :
     sys.exit(bjobs_setup(sys.argv[1:]))
-
-
-
-
-
-
-
-
