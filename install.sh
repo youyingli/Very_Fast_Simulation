@@ -47,6 +47,7 @@ if [ ! -f $INSTALL_PATH/lhapdf_install/bin/lhapdf-config ]; then
     ./configure --with-boost=/afs/cern.ch/sw/lcg/external/Boost/1.55.0_python2.7/x86_64-slc6-gcc47-opt \
         --prefix=${INSTALL_PATH}/lhapdf_install 2>&1 >/dev/null
     make -j 10 && make install 2>&1 >/dev/null
+    $INSTALL_PATH/lhapdf_install/bin/lhapdf install NNPDF23_lo_as_0130_qed
 
     echo
     echo "[INFO] : L H A P D F 6 . 1 . 6 plugin has been finished."
