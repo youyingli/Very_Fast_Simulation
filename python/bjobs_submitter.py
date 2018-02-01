@@ -2,6 +2,7 @@
 
 from optparse import OptionParser
 import os, sys
+import random
 
 def Option_Parser(argv):
 
@@ -59,6 +60,7 @@ def bjobs_setup (argv):
 
     #Madgraph5 + Pythia8
     if options.madgraph5_pythia8 :
+        random.seed()
         bjob_list = list()
         import madgraph5_pythia8_plugin
         bjob_scripts_path = '%s/bjobs/madgraph5_pythia8/%s' % (package_path, options.tag)
@@ -79,6 +81,7 @@ def bjobs_setup (argv):
                 mc_script = '%s/madgraph5_script%d.dat' % (mc_job, int(i))
                 os.system("sed -e 's/MYPATH/%s/" % tmp_dir.replace('/', '\/') + "g' %s > %s" % (mc_base + '/script.dat', mc_script))
                 os.system("echo 'set nevents %d' >> %s" % (int(mclist[1]), mc_script))
+                os.system("echo 'set iseed %d' >> %s" % (random.randint(1, 100000), mc_script))
 
                 #Pythia8
                 pythia8_card = (os.popen("ls %s | grep 'pythia8'" % mc_base).readlines())[0]

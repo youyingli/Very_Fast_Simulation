@@ -13,7 +13,7 @@ fi
 
 echo "[INFO] : Setting environment variables ..."
 STDLIBSETUP="source /cvmfs/sft.cern.ch/lcg/releases/LCG_87/gcc/4.9.3/x86_64-slc6/setup.sh"
-ROOTLIBSETUP="source /afs/cern.ch/sw/lcg/app/releases/ROOT/6.06.08/x86_64-slc6-gcc49-opt/root/bin/thisroot.sh"
+ROOTLIBSETUP="source /afs/cern.ch/sw/lcg/app/releases/ROOT/5.34.36/x86_64-slc6-gcc49-opt/root/bin/thisroot.sh"
 PYTHONSETUP="source /opt/rh/python27/enable"
 echo "#!/bin/bash" > $PACKAGE_PATH/env_setup.sh
 chmod 755 $PACKAGE_PATH/env_setup.sh
