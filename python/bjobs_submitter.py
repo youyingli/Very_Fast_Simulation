@@ -32,6 +32,10 @@ def Option_Parser(argv):
             action='store_true', dest='madgraph5_pythia8',
             help='Run madgraph5_pythia8'
             )
+    parser.add_option('--isNLO',
+            action='store_true', dest='isNLO',
+            help='Run madgraph5_pythia8 at NLO'
+            )
     parser.add_option('--FastSim',
             action='store_true', dest='FastSim',
             help='Run the detector simulation by Delphes3'
@@ -83,18 +87,28 @@ def bjobs_setup (argv):
                 os.system("echo 'set nevents %d' >> %s" % (int(mclist[1]), mc_script))
                 os.system("echo 'set iseed %d' >> %s" % (random.randint(1, 100000), mc_script))
 
-                #Pythia8
+                #Cars (If these cards are not present, it will use default cards)
+                run_card = (os.popen("ls %s | grep 'run'" % mc_base).readlines())[0]
                 pythia8_card = (os.popen("ls %s | grep 'pythia8'" % mc_base).readlines())[0]
-                if pythia8_card != '' :
-                    os.system("echo '%s' >> %s" %  (mc_base + '/' + pythia8_card, mc_script))
+                shower_card = (os.popen("ls %s | grep 'shower'" % mc_base).readlines())[0]
+                madspin_card = (os.popen("ls %s | grep 'madspin'" % mc_base).readlines())[0]
+
+                os.system("echo '%s' >> %s" %  (mc_base + '/' + run_card, mc_script))
+                os.system("echo '%s' >> %s" %  (mc_base + '/' + pythia8_card, mc_script))
+                os.system("echo '%s' >> %s" %  (mc_base + '/' + shower_card, mc_script))
+                os.system("echo '%s' >> %s" %  (mc_base + '/' + madspin_card, mc_script))
 
                 with open('%s/run_job%d.sh' % (mc_job, int(i)), 'w') as bjob_script :
 
                     bjob_script.write(madgraph5_pythia8_plugin.produce_batch_script(mc_script))
                     bjob_script.write('\n')
                     if (options.FastSim) :
-                        bjob_script.write('gunzip %s/Events/run_01/tag_1_pythia8_events.hepmc.gz\n' % tmp_dir)
-                        bjob_script.write("$HEPTOOL/delphes_install/bin/DelphesHepMC $VFS_PACKAGE_PATH/%s %s/delphes_output.root %s/Events/run_01/tag_1_pythia8_events.hepmc\n\n" % (options.delphes_card, outputdir, tmp_dir))
+                        if (options.isNLO) :
+                            bjob_script.write('gunzip %s/Events/run_01/events_PYTHIA8_0.hepmc.gz\n' % tmp_dir)
+                            bjob_script.write("$HEPTOOL/delphes_install/bin/DelphesHepMC $VFS_PACKAGE_PATH/%s %s/delphes_output.root %s/Events/run_01/events_PYTHIA8_0.hepmc.gz\n\n" % (options.delphes_card, outputdir, tmp_dir))
+                        else :
+                            bjob_script.write('gunzip %s/Events/run_01/tag_1_pythia8_events.hepmc.gz\n' % tmp_dir)
+                            bjob_script.write("$HEPTOOL/delphes_install/bin/DelphesHepMC $VFS_PACKAGE_PATH/%s %s/delphes_output.root %s/Events/run_01/tag_1_pythia8_events.hepmc\n\n" % (options.delphes_card, outputdir, tmp_dir))
                         for filetype in ['txt', 'dat', 'log', 'gnuplot', 'HwU'] :
                             bjob_script.write('cp %s/Events/run_01/*.%s %s/\n' % (tmp_dir, filetype, outputdir))
                         bjob_script.write('rm -rf %s' % tmp_dir)
