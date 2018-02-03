@@ -48,6 +48,7 @@ if [ ! -f $INSTALL_PATH/lhapdf_install/bin/lhapdf-config ]; then
         --prefix=${INSTALL_PATH}/lhapdf_install 2>&1 >/dev/null
     make -j 10 && make install 2>&1 >/dev/null
     $INSTALL_PATH/lhapdf_install/bin/lhapdf install NNPDF23_lo_as_0130_qed
+    $INSTALL_PATH/lhapdf_install/bin/lhapdf install NNPDF23_nlo_as_0119_qed
 
     echo
     echo "[INFO] : L H A P D F 6 . 1 . 6 plugin has been finished."
@@ -88,12 +89,18 @@ if [ ! -f $INSTALL_PATH/MG5_aMC_v2_6_1/HEPTools/MG5aMC_PY8_interface/MG5aMC_PY8_
     echo
     echo "# Package for associated with Madgraph5" > $INSTALL_PATH/install_list
     echo "install pythia8" >> $INSTALL_PATH/install_list
+    echo "install collier" >> $INSTALL_PATH/install_list
+    echo "install ninja" >> $INSTALL_PATH/install_list
+    echo "# aMCatNLO Tool test" > $INSTALL_PATH/install_list
+    echo "generate p p > z z [QCD]" > $INSTALL_PATH/install_list
+    echo "output NLOTEST -nojpeg" > $INSTALL_PATH/install_list
     echo "exit" >> $INSTALL_PATH/install_list
  
     echo "[INFO] : Start to build M A D G R A P H___P Y T H I A 8___I N T E R F A C E ..."
     echo
 
     ./bin/mg5_aMC -f $INSTALL_PATH/install_list 2>&1 >/dev/null
+    rm -rf NLOTEST
 
     echo
     echo "[INFO] : M A D G R A P H___P Y T H I A 8___I N T E R F A C E package has been finished."
