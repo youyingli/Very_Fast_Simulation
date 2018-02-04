@@ -1,0 +1,14 @@
+import model loop_sm-no_b_mass
+
+# Specify process(es) to run
+generate p p > Z Z [QCD]
+add process p p > Z Z j [QCD]
+
+# Output processes to MadEvent directory
+output MYPATH -nojpeg
+launch MYPATH
+
+
+order=NLO
+fixed_order=OFF
+shower=PYTHIA8
