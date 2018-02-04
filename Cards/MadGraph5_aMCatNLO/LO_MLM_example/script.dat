@@ -1,15 +1,19 @@
+# Global set
+set automatic_html_opening False
+
+# Import model
 import model sm-no_b_mass
 
-#define multiparticles
+# Define multiparticles
 define l+ = e+ mu+
 define l- = e- mu-
 
 # Specify process(es) to run
-generate p p > Z Z, Z > b b~, Z > l+ l-
+generate p p > z z, z > b b~, z > l+ l-
 
 # Output processes to MadEvent directory
 output MYPATH -nojpeg
 launch MYPATH
 
-#Pythia8
+# ME + PS / LO
 shower=Pythia8

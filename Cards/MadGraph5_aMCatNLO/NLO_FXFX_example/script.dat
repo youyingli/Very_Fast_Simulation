@@ -1,14 +1,18 @@
+# Global set
+set automatic_html_opening False
+
+# Import model 
 import model loop_sm-no_b_mass
 
 # Specify process(es) to run
-generate p p > Z Z [QCD]
-add process p p > Z Z j [QCD]
+generate p p > z z [QCD]
+add process p p > z z j [QCD]
 
 # Output processes to MadEvent directory
 output MYPATH -nojpeg
 launch MYPATH
 
-
+# ME + PS / NLO
 order=NLO
 fixed_order=OFF
 shower=PYTHIA8
