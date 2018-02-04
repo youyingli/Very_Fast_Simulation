@@ -74,7 +74,8 @@ def bjobs_setup (argv):
             mc_job = bjob_scripts_path + '/' + mclist[0]
             os.system('mkdir -p %s' % mc_job)
             for i in range(int(mclist[2])) :
-                outputdir = '%s/output%d' % (options.outdir + '/' + options.tag + '/' + mclist[0], int(i))
+                output = options.outdir + '/' + options.tag + '/' + mclist[0]
+                outputdir = '%s/output%d' % (output, int(i))
                 os.system('mkdir -p ' + outputdir)
                 mc_base = package_path + '/Cards/MadGraph5_aMCatNLO/' + mclist[0]
                 if os.path.isfile(mc_base + '/cript.dat') :
@@ -105,10 +106,10 @@ def bjobs_setup (argv):
                     if (options.FastSim) :
                         if (options.isNLO) :
                             bjob_script.write('gunzip %s/Events/run_01/events_PYTHIA8_0.hepmc.gz\n' % tmp_dir)
-                            bjob_script.write("$HEPTOOL/delphes_install/bin/DelphesHepMC $VFS_PACKAGE_PATH/%s %s/delphes_output.root %s/Events/run_01/events_PYTHIA8_0.hepmc.gz\n\n" % (options.delphes_card, outputdir, tmp_dir))
+                            bjob_script.write("$HEPTOOL/delphes_install/bin/DelphesHepMC $VFS_PACKAGE_PATH/%s %s/delphes_output_%d.root %s/Events/run_01/events_PYTHIA8_0.hepmc.gz\n\n" % (options.delphes_card, output, int(i), tmp_dir))
                         else :
                             bjob_script.write('gunzip %s/Events/run_01/tag_1_pythia8_events.hepmc.gz\n' % tmp_dir)
-                            bjob_script.write("$HEPTOOL/delphes_install/bin/DelphesHepMC $VFS_PACKAGE_PATH/%s %s/delphes_output.root %s/Events/run_01/tag_1_pythia8_events.hepmc\n\n" % (options.delphes_card, outputdir, tmp_dir))
+                            bjob_script.write("$HEPTOOL/delphes_install/bin/DelphesHepMC $VFS_PACKAGE_PATH/%s %s/delphes_output_%d.root %s/Events/run_01/tag_1_pythia8_events.hepmc\n\n" % (options.delphes_card, output, int(i), tmp_dir))
                         for filetype in ['txt', 'dat', 'log', 'gnuplot', 'HwU'] :
                             bjob_script.write('cp %s/Events/run_01/*.%s %s/\n' % (tmp_dir, filetype, outputdir))
                         bjob_script.write('rm -rf %s' % tmp_dir)
