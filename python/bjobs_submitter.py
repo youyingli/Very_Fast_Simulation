@@ -89,15 +89,19 @@ def bjobs_setup (argv):
                 os.system("echo 'set iseed %d' >> %s" % (random.randint(1, 100000), mc_script))
 
                 #Cars (If these cards are not present, it will use default cards)
-                run_card = (os.popen("ls %s | grep 'run'" % mc_base).readlines())[0]
-                pythia8_card = (os.popen("ls %s | grep 'pythia8'" % mc_base).readlines())[0]
-                shower_card = (os.popen("ls %s | grep 'shower'" % mc_base).readlines())[0]
-                madspin_card = (os.popen("ls %s | grep 'madspin'" % mc_base).readlines())[0]
+                run_card = (os.popen("ls %s | grep 'run'" % mc_base).readlines())
+                pythia8_card = (os.popen("ls %s | grep 'pythia8'" % mc_base).readlines())
+                shower_card = (os.popen("ls %s | grep 'shower'" % mc_base).readlines())
+                madspin_card = (os.popen("ls %s | grep 'madspin'" % mc_base).readlines())
 
-                os.system("echo '%s' >> %s" %  (mc_base + '/' + run_card, mc_script))
-                os.system("echo '%s' >> %s" %  (mc_base + '/' + pythia8_card, mc_script))
-                os.system("echo '%s' >> %s" %  (mc_base + '/' + shower_card, mc_script))
-                os.system("echo '%s' >> %s" %  (mc_base + '/' + madspin_card, mc_script))
+                if run_card != [] :
+                    os.system("echo '%s' >> %s" %  (mc_base + '/' + run_card[0], mc_script))
+                if pythia8_card != [] :
+                    os.system("echo '%s' >> %s" %  (mc_base + '/' + pythia8_card[0], mc_script))
+                if shower_card != [] :
+                    os.system("echo '%s' >> %s" %  (mc_base + '/' + shower_card[0], mc_script))
+                if madspin_card != [] :
+                    os.system("echo '%s' >> %s" %  (mc_base + '/' + madspin_card[0], mc_script))
 
                 with open('%s/run_job%d.sh' % (mc_job, int(i)), 'w') as bjob_script :
 

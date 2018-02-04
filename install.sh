@@ -70,30 +70,30 @@ echo 'export PYTHONPATH=$PWD/HepMCTool/lhapdf_install/lib64/python2.7/site-packa
 
 ########################M A D G R A P H___P Y T H I A 8___I N T E R F A C E###################
 
-if [ ! -f $INSTALL_PATH/MG5_aMC_v2_6_1/HEPTools/MG5aMC_PY8_interface/MG5aMC_PY8_interface ]; then
+if [ ! -f $INSTALL_PATH/MG5_aMC_v2_6_0/HEPTools/MG5aMC_PY8_interface/MG5aMC_PY8_interface ]; then
     echo "[INFO] : M A D G R A P H___P Y T H I A 8___I N T E R F A C E can not be found."
     echo "[INFO] : Start to download M A D G R A P H___P Y T H I A 8___I N T E R F A C E ..."
     echo
 
     cd $INSTALL_PATH
-    wget https://launchpad.net/mg5amcnlo/2.0/2.6.x/+download/MG5_aMC_v2.6.1.tar.gz
-    tar -zxf MG5_aMC_v2.6.1.tar.gz
-    rm MG5_aMC_v2.6.1.tar.gz
-    cd $INSTALL_PATH/MG5_aMC_v2_6_1
+    wget https://launchpad.net/mg5amcnlo/2.0/2.6.x/+download/MG5_aMC_v2.6.0.tar.gz
+    tar -zxf MG5_aMC_v2.6.0.tar.gz
+    rm MG5_aMC_v2.6.0.tar.gz
+    cd $INSTALL_PATH/MG5_aMC_v2_6_0
     
     OLD_LHAPDF="# lhapdf = lhapdf-config"
     NEW_LHAPDF=" lhapdf = ${INSTALL_PATH}/lhapdf_install/bin/lhapdf-config"
-    sed -e "s@$OLD_LHAPDF@$NEW_LHAPDF@g" $INSTALL_PATH/MG5_aMC_v2_6_1/input/.mg5_configuration_default.txt > \
-        $INSTALL_PATH/MG5_aMC_v2_6_1/input/mg5_configuration.txt
+    sed -e "s@$OLD_LHAPDF@$NEW_LHAPDF@g" $INSTALL_PATH/MG5_aMC_v2_6_0/input/.mg5_configuration_default.txt > \
+        $INSTALL_PATH/MG5_aMC_v2_6_0/input/mg5_configuration.txt
     
     echo
     echo "# Package for associated with Madgraph5" > $INSTALL_PATH/install_list
     echo "install pythia8" >> $INSTALL_PATH/install_list
     echo "install collier" >> $INSTALL_PATH/install_list
     echo "install ninja" >> $INSTALL_PATH/install_list
-    echo "# aMCatNLO Tool test" > $INSTALL_PATH/install_list
-    echo "generate p p > z z [QCD]" > $INSTALL_PATH/install_list
-    echo "output NLOTEST -nojpeg" > $INSTALL_PATH/install_list
+    echo "# aMCatNLO Tool test" >> $INSTALL_PATH/install_list
+    echo "generate p p > z z [QCD]" >> $INSTALL_PATH/install_list
+    echo "output NLOTEST -nojpeg" >> $INSTALL_PATH/install_list
     echo "exit" >> $INSTALL_PATH/install_list
  
     echo "[INFO] : Start to build M A D G R A P H___P Y T H I A 8___I N T E R F A C E ..."
