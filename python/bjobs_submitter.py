@@ -85,8 +85,6 @@ def bjobs_setup (argv):
                 tmp_dir = '/tmp/%s/%s_%s_tmp' % (USER, mclist[0], options.tag)
                 mc_script = '%s/madgraph5_script%d.dat' % (mc_job, int(i))
                 os.system("sed -e 's/MYPATH/%s/" % tmp_dir.replace('/', '\/') + "g' %s > %s" % (mc_base + '/script.dat', mc_script))
-                os.system("echo 'set nevents %d' >> %s" % (int(mclist[1]), mc_script))
-                os.system("echo 'set iseed %d' >> %s" % (random.randint(1, 100000), mc_script))
 
                 #Cars (If these cards are not present, it will use default cards)
                 run_card = (os.popen("ls %s | grep 'run'" % mc_base).readlines())
@@ -94,14 +92,14 @@ def bjobs_setup (argv):
                 shower_card = (os.popen("ls %s | grep 'shower'" % mc_base).readlines())
                 madspin_card = (os.popen("ls %s | grep 'madspin'" % mc_base).readlines())
 
-                if run_card != [] :
-                    os.system("echo '%s' >> %s" %  (mc_base + '/' + run_card[0], mc_script))
                 if pythia8_card != [] :
                     os.system("echo '%s' >> %s" %  (mc_base + '/' + pythia8_card[0], mc_script))
                 if shower_card != [] :
                     os.system("echo '%s' >> %s" %  (mc_base + '/' + shower_card[0], mc_script))
                 if madspin_card != [] :
                     os.system("echo '%s' >> %s" %  (mc_base + '/' + madspin_card[0], mc_script))
+                os.system("echo 'set nevents %d' >> %s" % (int(mclist[1]), mc_script))
+                os.system("echo 'set iseed %d' >> %s" % (random.randint(1, 1000000), mc_script))
 
                 with open('%s/run_job%d.sh' % (mc_job, int(i)), 'w') as bjob_script :
 
@@ -109,14 +107,15 @@ def bjobs_setup (argv):
                     bjob_script.write('\n')
                     if (options.FastSim) :
                         if (options.isNLO) :
-                            bjob_script.write('gunzip %s/Events/run_01/events_PYTHIA8_0.hepmc.gz\n' % tmp_dir)
-                            bjob_script.write("$HEPTOOL/delphes_install/bin/DelphesHepMC $VFS_PACKAGE_PATH/%s %s/delphes_output_%d.root %s/Events/run_01/events_PYTHIA8_0.hepmc.gz\n\n" % (options.delphes_card, output, int(i), tmp_dir))
+                            bjob_script.write('gunzip %s/Events/run_01_decayed_1/events_PYTHIA8_0.hepmc.gz\n' % tmp_dir)
+                            bjob_script.write("$HEPTOOL/delphes_install/bin/DelphesHepMC $VFS_PACKAGE_PATH/%s %s/delphes_output_%d.root %s/Events/run_01_decayed_1/events_PYTHIA8_0.hepmc\n\n" % (options.delphes_card, output, int(i), tmp_dir))
                         else :
                             bjob_script.write('gunzip %s/Events/run_01/tag_1_pythia8_events.hepmc.gz\n' % tmp_dir)
                             bjob_script.write("$HEPTOOL/delphes_install/bin/DelphesHepMC $VFS_PACKAGE_PATH/%s %s/delphes_output_%d.root %s/Events/run_01/tag_1_pythia8_events.hepmc\n\n" % (options.delphes_card, output, int(i), tmp_dir))
-                        for filetype in ['txt', 'dat', 'log', 'gnuplot', 'HwU'] :
-                            bjob_script.write('cp %s/Events/run_01/*.%s %s/\n' % (tmp_dir, filetype, outputdir))
-                        bjob_script.write('rm -rf %s' % tmp_dir)
+                    for filetype in ['txt', 'dat', 'log', 'gnuplot', 'HwU'] :
+                        bjob_script.write('cp %s/Events/run_01/*.%s %s/\n' % (tmp_dir, filetype, outputdir))
+                        bjob_script.write('cp %s/Events/run_01_decayed_1/*.%s %s/\n' % (tmp_dir, filetype, outputdir))
+                    bjob_script.write('rm -rf %s' % tmp_dir)
                 os.system('chmod 755 %s/run_job%d.sh' % (mc_job, int(i)))
                 bjob_list.append('%s/run_job%d.sh' % (mc_job, int(i)))
         batch_job_submitter (bjob_list, options.queue)

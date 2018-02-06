@@ -10,7 +10,6 @@ define j- = j b b~
 
 # Specify process(es) to run
 generate p p > z z, z > b b~, z > l+ l-
-add process p p > z z j, z > b b~, z > l+ l-
 
 # Output processes to MadEvent directory
 output MYPATH -nojpeg
@@ -18,12 +17,3 @@ launch MYPATH
 
 # ME + PS / LO
 shower=Pythia8
-
-#run_card
-set run_card ickkw 1
-set run_card xqcut 30.0
-set run_card ptj 0.01
-set run_card ptl 0
-set run_card draa 0
-set run_card draj 0.1
-set run_card dral 0.1
