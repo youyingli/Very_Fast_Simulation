@@ -25,7 +25,7 @@ Main:numberOfEvents      = -1
 !               fifo). Note that the fifo file extension *must* be '.hepmc.fifo'.
 ! -------------------------------------------------------------------
 !
-HEPMCoutput:file         = auto
+HEPMCoutput:file         = pythia8_events.hepmc
 !
 ! --------------------------------------------------------------------
 ! Parameters relevant only when performing MLM merging, which can be
@@ -43,6 +43,7 @@ JetMatching:doShowerKt   = off
 ! A value of -1 means that it is automatically guessed by MadGraph.
 ! It is however always safer to explicitly set it.
 JetMatching:nJetMax      = -1
+JetMatching:etaJetMax    = 5.
 !
 ! --------------------------------------------------------------------
 ! Parameters relevant only when performing CKKW-L merging, which can

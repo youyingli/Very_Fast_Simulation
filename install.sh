@@ -70,21 +70,21 @@ echo 'export PYTHONPATH=$PWD/HepMCTool/lhapdf_install/lib64/python2.7/site-packa
 
 ########################M A D G R A P H___P Y T H I A 8___I N T E R F A C E###################
 
-if [ ! -f $INSTALL_PATH/MG5_aMC_v2_6_0/HEPTools/MG5aMC_PY8_interface/MG5aMC_PY8_interface ]; then
+if [ ! -f $INSTALL_PATH/MG5_aMC_v2_6_3_2/HEPTools/MG5aMC_PY8_interface/MG5aMC_PY8_interface ]; then
     echo "[INFO] : M A D G R A P H___P Y T H I A 8___I N T E R F A C E can not be found."
     echo "[INFO] : Start to download M A D G R A P H___P Y T H I A 8___I N T E R F A C E ..."
     echo
 
     cd $INSTALL_PATH
-    wget https://launchpad.net/mg5amcnlo/2.0/2.6.x/+download/MG5_aMC_v2.6.0.tar.gz
-    tar -zxf MG5_aMC_v2.6.0.tar.gz
-    rm MG5_aMC_v2.6.0.tar.gz
-    cd $INSTALL_PATH/MG5_aMC_v2_6_0
+    wget https://launchpad.net/mg5amcnlo/2.0/2.6.x/+download/MG5_aMC_v2.6.3.2.tar.gz
+    tar -zxf MG5_aMC_v2.6.3.2.tar.gz
+    rm MG5_aMC_v2.6.3.2.tar.gz
+    cd $INSTALL_PATH/MG5_aMC_v2_6_3_2
     
     OLD_LHAPDF="# lhapdf = lhapdf-config"
     NEW_LHAPDF=" lhapdf = ${INSTALL_PATH}/lhapdf_install/bin/lhapdf-config"
-    sed -e "s@$OLD_LHAPDF@$NEW_LHAPDF@g" $INSTALL_PATH/MG5_aMC_v2_6_0/input/.mg5_configuration_default.txt > \
-        $INSTALL_PATH/MG5_aMC_v2_6_0/input/mg5_configuration.txt
+    sed -e "s@$OLD_LHAPDF@$NEW_LHAPDF@g" $INSTALL_PATH/MG5_aMC_v2_6_3_2/input/.mg5_configuration_default.txt > \
+        $INSTALL_PATH/MG5_aMC_v2_6_3_2/input/mg5_configuration.txt
     
     echo
     echo "# Package for associated with Madgraph5" > $INSTALL_PATH/install_list

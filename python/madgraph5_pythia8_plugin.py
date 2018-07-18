@@ -9,7 +9,7 @@ VFS_PACKAGE_PATH={0}
 HEPTOOL=$VFS_PACKAGE_PATH/HepMCTool
 
 source $VFS_PACKAGE_PATH/env_setup.sh
-cd $HEPTOOL/MG5_aMC_v2_6_0/
+cd $HEPTOOL/MG5_aMC_v2_6_3_2/
 ./bin/mg5_aMC -f {1}
 """
 
