@@ -5,14 +5,53 @@ set automatic_html_opening False
 import model loop_sm-no_b_mass
 
 # Specify process(es) to run
-generate p p > z z [QCD]
-add process p p > z z j [QCD]
+generate p p > z  [QCD]
+add process p p > z j [QCD]
 
 # Output processes to MadEvent directory
 output MYPATH -nojpeg
 launch MYPATH
 
-# ME + PS / NLO
+# ME + PS / NLO / Decay
 order=NLO
 fixed_order=OFF
 shower=PYTHIA8
+madspin=ON
+
+# param_card
+##------------ Customization Parameters (Depend on you) ----------------------------
+### set param_card ymb 4.7
+### For more parameters, please see the model you use
+
+# run_card 
+##------------ Customization Parameters (Depend on you) ----------------------------
+set run_card maxjetflavor 5 #Include b quark as massless particle
+### set run_card ptgmin 20
+### For more parameters, please see run_card.dict
+
+##------------ Jet Matching by FXFX ------------------------------------------------
+### Jet Matching parameters (Fixed)
+set run_card ickkw 3     #Use FXFX
+set run_card fixed_ren_scale F 
+set run_card fixed_fac_scale F 
+set run_card fixed_QES_scale F
+set run_card jetalgo 1   #Kt fast jet algorithm
+set run_card jetradius 1 #Must be 1 for FXFX
+
+### Matching scale parameter (Need to be tuned according to the process)
+set run_card ptj 20 #Need to tune ptj < Qcut in shower_card.dat
+
+### shower_card.dat
+###  Also tune "Qcut"   : Matching scale (Qcut > ptj)
+###  Also tune "njmax"  : Number of extra jets
+
+# Decay Decision
+##------------ Use Madspin ---------------------------------------------------------
+### For NLO, decay chain can't be input in process generation, 
+### that is, "generate p p > z [QCD] , z > l+ l-" ,but uses MadSpin by 
+### including madspin_card.dat with the same syntax as process.
+
+##------------ Use Pythia8 ---------------------------------------------------------
+### For Higgs --> gamma gamma which involves loop decay, you can use
+### pythia8 to implement, that is, add some commands into shower_card.dat
+### For more information sees the comments in shower_card.dat 

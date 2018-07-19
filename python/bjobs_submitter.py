@@ -92,12 +92,12 @@ def bjobs_setup (argv):
                 os.system("sed -e 's/MYPATH/%s/" % tmp_dir.replace('/', '\/') + "g' %s > %s" % (mc_base + '/script.dat', mc_script))
 
                 #Cars (If these cards are not present, it will use default cards)
-                #shower_card = (os.popen("ls %s | grep 'shower'" % mc_base).readlines())
+                shower_card  = (os.popen("ls %s | grep 'shower'" % mc_base).readlines())
                 pythia8_card = (os.popen("ls %s | grep 'pythia8'" % mc_base).readlines())
                 madspin_card = (os.popen("ls %s | grep 'madspin'" % mc_base).readlines())
 
-                #if shower_card != [] :
-                #    os.system("echo '%s' >> %s" %  (mc_base + '/' + shower_card[0], mc_script))
+                if shower_card != [] :
+                    os.system("echo '%s' >> %s" %  (mc_base + '/' + shower_card[0], mc_script))
                 if pythia8_card != [] :
                     os.system("echo '%s' >> %s" %  (mc_base + '/' + pythia8_card[0], mc_script))
                 if madspin_card != [] :
@@ -113,10 +113,10 @@ def bjobs_setup (argv):
                     if (options.FastSim) :
                         if (options.isNLO) :
                             bjob_script.write('gunzip %s/Events/run_01_decayed_1/events_PYTHIA8_0.hepmc.gz\n' % tmp_dir)
-                            bjob_script.write("$HEPTOOL/delphes_install/bin/DelphesHepMC $VFS_PACKAGE_PATH/%s %s/delphes_output_%d.root %s/Events/run_01_decayed_1/events_PYTHIA8_0.hepmc\n\n" % (options.delphes_card, output, int(i), tmp_dir))
+                            bjob_script.write("$HEPTOOL/delphes_install/bin/DelphesHepMC $VFS_PACKAGE_PATH/%s %s/delphes_output_%d.root %s/Events/run_01_decayed_1/events_PYTHIA8_0.hepmc\n\n" % (options.delphes_card, outdir, int(i), tmp_dir))
                         else :
                             bjob_script.write("$HEPTOOL/delphes_install/bin/DelphesHepMC $VFS_PACKAGE_PATH/%s %s/delphes_output_%d.root %s/Events/run_01/pythia8_events.hepmc\n\n" % (options.delphes_card, outdir, int(i), tmp_dir))
-                            delete_cmd_list.append('rm %s/delphes_output_%d.root' % (outdir, int(i)))
+                        delete_cmd_list.append('rm %s/delphes_output_%d.root' % (outdir, int(i)))
 
                     bjob_script.write('mkdir -p %s/run%d\n' % (outdir, int(i)))
 
