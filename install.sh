@@ -47,8 +47,10 @@ if [ ! -f $INSTALL_PATH/lhapdf_install/bin/lhapdf-config ]; then
     ./configure --with-boost=/afs/cern.ch/sw/lcg/external/Boost/1.55.0_python2.7/x86_64-slc6-gcc47-opt \
         --prefix=${INSTALL_PATH}/lhapdf_install 2>&1 >/dev/null
     make -j 10 && make install 2>&1 >/dev/null
-    $INSTALL_PATH/lhapdf_install/bin/lhapdf install NNPDF23_lo_as_0130_qed
-    $INSTALL_PATH/lhapdf_install/bin/lhapdf install NNPDF23_nlo_as_0119_qed
+    $INSTALL_PATH/lhapdf_install/bin/lhapdf install NNPDF30_nlo_nf_4_pdfas
+    $INSTALL_PATH/lhapdf_install/bin/lhapdf install NNPDF30_nlo_nf_5_pdfas
+    $INSTALL_PATH/lhapdf_install/bin/lhapdf install NNPDF30_nnlo_nf_4_pdfas
+    $INSTALL_PATH/lhapdf_install/bin/lhapdf install NNPDF30_nnlo_nf_5_pdfas
 
     echo
     echo "[INFO] : L H A P D F 6 . 1 . 6 plugin has been finished."
@@ -88,6 +90,7 @@ if [ ! -f $INSTALL_PATH/MG5_aMC_v2_6_3_2/HEPTools/MG5aMC_PY8_interface/MG5aMC_PY
     
     echo
     echo "# Package for associated with Madgraph5" > $INSTALL_PATH/install_list
+    echo "install boost" >> $INSTALL_PATH/install_list
     echo "install pythia8" >> $INSTALL_PATH/install_list
     echo "install collier" >> $INSTALL_PATH/install_list
     echo "install ninja" >> $INSTALL_PATH/install_list

@@ -58,8 +58,11 @@ def batch_job_submitter (script_list, queue, mc_job, delete_cmd_list) :
     with open('%s/resubmit_job.sh' % mc_job, 'w') as resubmit_script :
         resubmit_script.write('#Here is resubmit job script. If needed, please delete those which have beed finished jobs in the following\n')
         for i in range(len(script_list)) :
-            #os.system('bsub -q %s -o %s %s' % (queue, script_list[i].replace('.sh', '.log'), script_list[i]))
-            resubmit_script.write( 'bsub -q %s -o /dev/null %s && %s \n' % (queue, script_list[i], delete_cmd_list[i]) )
+            os.system('bsub -q %s -R "rusage[mem=30000:pool=30000]" -o %s %s' % (queue, script_list[i].replace('.sh', '.log'), script_list[i]))
+            if (len(delete_cmd_list) == 0) :
+                resubmit_script.write( 'bsub -q %s -R "rusage[mem=30000:pool=30000]" -o /dev/null %s\n' % (queue, script_list[i]) )
+            else :
+                resubmit_script.write( 'bsub -q %s -R "rusage[mem=30000:pool=30000]" -o /dev/null %s && %s \n' % (queue, script_list[i], delete_cmd_list[i]) )
 
 def bjobs_setup (argv):
 

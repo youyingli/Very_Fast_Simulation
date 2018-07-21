@@ -9,9 +9,7 @@ define p- = p b b~
 define j- = j b b~
 
 # Specify process(es) to run
-generate p p > z  [QCD]
-add process p p > z j [QCD]
-add process p p > z j j [QCD]
+generate p p > z [QCD]
 
 # Output processes to MadEvent directory
 output MYPATH -nojpeg
@@ -37,26 +35,10 @@ set run_card maxjetflavor 5 #Include b quark as massless particle
 ##------------ PDF Set (Depend on you) ----------------------------
 set run_card pdlabel lhapdf
 set run_card lhaid 292200
-set run_card reweight_PDF F
+set run_card reweight_PDF T
 ### set PDF_set_min 292201
 ### set PDF_set_max 292302
 ### Reference : https://lhapdf.hepforge.org/pdfsets
-
-##------------ Jet Matching by FXFX ------------------------------------------------
-### Jet Matching parameters (Fixed)
-set run_card ickkw 3     #Use FXFX
-set run_card fixed_ren_scale F 
-set run_card fixed_fac_scale F 
-set run_card fixed_QES_scale F
-set run_card jetalgo 1   #Kt fast jet algorithm
-set run_card jetradius 1 #Must be 1 for FXFX
-
-### Matching scale parameter (Need to be tuned according to the process)
-set run_card ptj 20 #Need to tune ptj < Qcut in shower_card.dat
-
-### shower_card.dat
-###  Also tune "Qcut"   : Matching scale (Qcut > ptj)
-###  Also tune "njmax"  : Number of extra jets
 
 # Decay Decision
 ##------------ Use Madspin ---------------------------------------------------------
