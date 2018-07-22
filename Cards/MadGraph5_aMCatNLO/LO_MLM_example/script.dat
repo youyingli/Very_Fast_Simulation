@@ -33,6 +33,7 @@ set run_card draa 0
 set run_card draj 0.1
 set run_card dral 0.1
 set run_card maxjetflavor 5 #Include b quark as massless particle
+set run_card cut_decays F #Whether kinematic cuts apply to decay chains
 ### set run_card ptgmin 20
 ### For more parameters, please see run_card.dict
 
