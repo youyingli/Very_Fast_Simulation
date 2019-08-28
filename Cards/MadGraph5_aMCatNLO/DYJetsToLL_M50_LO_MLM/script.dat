@@ -5,8 +5,8 @@ set automatic_html_opening False
 import model sm-no_b_mass
 
 # Define multiparticles
-define p- = p b b~
-define j- = j b b~
+define p = p b b~
+define j = j b b~
 define l+ = e+ mu+ ta+
 define l- = e- mu- ta-
 
