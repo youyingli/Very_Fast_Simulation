@@ -13,8 +13,8 @@ fi
 
 echo "[INFO] : Setting environment variables ..."
 STDLIBSETUP="source /cvmfs/sft.cern.ch/lcg/releases/LCG_87/gcc/4.9.3/x86_64-slc6/setup.sh"
-ROOTLIBSETUP="source /afs/cern.ch/sw/lcg/app/releases/ROOT/5.34.36/x86_64-slc6-gcc49-opt/root/bin/thisroot.sh"
-PYTHONSETUP="source /opt/rh/python27/enable"
+ROOTLIBSETUP="source /cvmfs/sft.cern.ch/lcg/app/releases/ROOT/6.06.00/x86_64-slc6-gcc49-opt/root/bin/thisroot.sh"
+PYTHONSETUP="source /cvmfs/sft.cern.ch/lcg/releases/LCG_87/Python/2.7.10/x86_64-slc6-gcc49-opt/Python-env.sh"
 echo "#!/bin/bash" > $PACKAGE_PATH/env_setup.sh
 chmod 755 $PACKAGE_PATH/env_setup.sh
 $STDLIBSETUP && echo $STDLIBSETUP >> $PACKAGE_PATH/env_setup.sh
@@ -44,13 +44,12 @@ if [ ! -f $INSTALL_PATH/lhapdf_install/bin/lhapdf-config ]; then
     echo "[INFO] : Start to build L H A P D F 6 . 1 . 6 plugin ..."
     echo
 
-    ./configure --with-boost=/afs/cern.ch/sw/lcg/external/Boost/1.55.0_python2.7/x86_64-slc6-gcc47-opt \
+    ./configure --with-boost=/cvmfs/sft.cern.ch/lcg/external/Boost/1.53.0_python2.7/x86_64-slc6-gcc48-opt \
         --prefix=${INSTALL_PATH}/lhapdf_install 2>&1 >/dev/null
     make -j 10 && make install 2>&1 >/dev/null
-    $INSTALL_PATH/lhapdf_install/bin/lhapdf install NNPDF30_nlo_nf_4_pdfas
-    $INSTALL_PATH/lhapdf_install/bin/lhapdf install NNPDF30_nlo_nf_5_pdfas
-    $INSTALL_PATH/lhapdf_install/bin/lhapdf install NNPDF30_nnlo_nf_4_pdfas
-    $INSTALL_PATH/lhapdf_install/bin/lhapdf install NNPDF30_nnlo_nf_5_pdfas
+    $INSTALL_PATH/lhapdf_install/bin/lhapdf update
+    $INSTALL_PATH/lhapdf_install/bin/lhapdf install NNPDF31_nnlo_hessian_pdfas
+
 
     echo
     echo "[INFO] : L H A P D F 6 . 1 . 6 plugin has been finished."
@@ -72,25 +71,24 @@ echo 'export PYTHONPATH=$PWD/HepMCTool/lhapdf_install/lib64/python2.7/site-packa
 
 ########################M A D G R A P H___P Y T H I A 8___I N T E R F A C E###################
 
-if [ ! -f $INSTALL_PATH/MG5_aMC_v2_6_3_2/HEPTools/MG5aMC_PY8_interface/MG5aMC_PY8_interface ]; then
+if [ ! -f $INSTALL_PATH/MG5_aMC_v2_6_6/HEPTools/MG5aMC_PY8_interface/MG5aMC_PY8_interface ]; then
     echo "[INFO] : M A D G R A P H___P Y T H I A 8___I N T E R F A C E can not be found."
     echo "[INFO] : Start to download M A D G R A P H___P Y T H I A 8___I N T E R F A C E ..."
     echo
 
     cd $INSTALL_PATH
-    wget https://launchpad.net/mg5amcnlo/2.0/2.6.x/+download/MG5_aMC_v2.6.3.2.tar.gz
-    tar -zxf MG5_aMC_v2.6.3.2.tar.gz
-    rm MG5_aMC_v2.6.3.2.tar.gz
-    cd $INSTALL_PATH/MG5_aMC_v2_6_3_2
+    wget https://launchpad.net/mg5amcnlo/2.0/2.6.x/+download/MG5_aMC_v2.6.6.tar.gz
+    tar -zxf MG5_aMC_v2.6.6.tar.gz
+    rm MG5_aMC_v2.6.6.tar.gz
+    cd $INSTALL_PATH/MG5_aMC_v2_6_6
     
     OLD_LHAPDF="# lhapdf = lhapdf-config"
     NEW_LHAPDF=" lhapdf = ${INSTALL_PATH}/lhapdf_install/bin/lhapdf-config"
-    sed -e "s@$OLD_LHAPDF@$NEW_LHAPDF@g" $INSTALL_PATH/MG5_aMC_v2_6_3_2/input/.mg5_configuration_default.txt > \
-        $INSTALL_PATH/MG5_aMC_v2_6_3_2/input/mg5_configuration.txt
+    sed -e "s@$OLD_LHAPDF@$NEW_LHAPDF@g" $INSTALL_PATH/MG5_aMC_v2_6_6/input/.mg5_configuration_default.txt > \
+        $INSTALL_PATH/MG5_aMC_v2_6_6/input/mg5_configuration.txt
     
     echo
     echo "# Package for associated with Madgraph5" > $INSTALL_PATH/install_list
-    echo "install boost" >> $INSTALL_PATH/install_list
     echo "install pythia8" >> $INSTALL_PATH/install_list
     echo "install collier" >> $INSTALL_PATH/install_list
     echo "install ninja" >> $INSTALL_PATH/install_list
@@ -127,7 +125,7 @@ if [ ! -f ${INSTALL_PATH}/delphes_install/bin/DelphesHepMC ]; then
     echo
 
     cd $BACKUP_PATH
-    git clone https://github.com/delphes/delphes.git
+    git clone https://github.com/delphes/delphes.git -b 3.4.2
     cd $BACKUP_PATH/delphes
     mkdir $BACKUP_PATH/delphes/build
     cd $BACKUP_PATH/delphes/build
@@ -136,6 +134,7 @@ if [ ! -f ${INSTALL_PATH}/delphes_install/bin/DelphesHepMC ]; then
     echo "[INFO] : Start to build D E L P H E S 3 package ..."
     echo
     
+    cd Delphes-3.4.2
     cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_PATH}/delphes_install .. 2>&1 >/dev/null
     make -j 4 install 2>&1 >/dev/null
     
@@ -153,4 +152,5 @@ fi
 cd $PACKAGE_PATH
 echo "[INFO] : All packages have beed set up. Please source ****env_setup.sh**** !!"
 echo
+
 echo

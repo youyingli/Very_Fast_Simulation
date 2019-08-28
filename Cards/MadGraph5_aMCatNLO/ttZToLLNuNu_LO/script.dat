@@ -7,9 +7,12 @@ import model sm-no_b_mass
 # Define multiparticles
 define p- = p b b~
 define j- = j b b~
+define l+ = e+ mu+ ta+
+define l- = e- mu- ta- 
 
 # Specify process(es) to run
-generate p p > z, z > l+ l-
+generate p p > t t~ l+ l- / h
+add process p p > t t~ vl vl~ / h
 
 # Output processes to MadEvent directory
 output MYPATH -nojpeg
