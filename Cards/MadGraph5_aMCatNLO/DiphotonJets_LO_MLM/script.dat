@@ -1,0 +1,70 @@
+# Global set
+set automatic_html_opening False
+
+# Import model
+import model sm-no_b_mass
+
+# Define multiparticles
+define p = p b b~
+define j = j b b~
+define l+ = e+ mu+ ta+
+define l- = e- mu- ta-
+
+# Specify process(es) to run
+generate p p > a a
+add process p p > a a j
+add process p p > a a j j
+
+# Output processes to MadEvent directory
+output MYPATH -nojpeg
+launch MYPATH
+
+# ME + PS / LO
+shower=Pythia8
+
+# param_card
+##------------ Customization Parameters (Depend on you) ----------------------------
+### set param_card ymb 4.7
+### For more parameters, please see the model you use
+
+# run_card 
+##------------ Customization Parameters (Depend on you) ----------------------------
+set run_card pdlabel lhapdf
+set run_card lhaid 306000
+set run_card ptj 10
+set run_card ptl 0
+set run_card pta 15
+set run_card drjj 0
+set run_card draa 0
+set run_card drll 0
+set run_card draj 0.1
+set run_card dral 0.1
+set run_card maxjetflavor 5 #Include b quark as massless particle
+set run_card cut_decays F #Whether kinematic cuts apply to decay chains
+### set run_card ptgmin 20
+### For more parameters, please see run_card.dict
+set run_card mmaa 80
+set run_card mmll 50
+set run_card ptgmin 15
+set run_card etagamma 3.2
+
+##------------ Jet Matching by MLM -------------------------------------------------
+### Jet Matching parameters (Fixed)
+set run_card ickkw 1     #Use MLM
+set run_card asrwgtflavor 5
+
+### Matching scale parameter (Need to be tuned according to the process)
+set run_card xqcut 10.0
+
+### pythia8_card.dat
+### More Jet Matching commands can be added into pythia8_card.dat
+### Reference : http://home.thep.lu.se/~torbjorn/pythia81html/JetMatching.html
+
+# pythia8_card.dat
+##------------ Jet Matching by MLM -------------------------------------------------
+### See the above 
+##------------ Decay Decision ------------------------------------------------------
+### For Higgs --> gamma gamma which involves loop decay, you can use
+### pythia8 to implement, that is, add some commands into pythia8_card.dat
+### Reference : http://home.thep.lu.se/Pythia/pythia82html/ParticleDataScheme.html
+### Reference : http://home.thep.lu.se/~torbjorn/talks/tutorial81.pdf
