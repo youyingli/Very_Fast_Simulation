@@ -14,6 +14,7 @@ set ExecutionPath {
   MuonMomentumSmearing
 
   TrackMerger
+  TrackSmearing
  
   ECal
   HCal
@@ -203,6 +204,22 @@ module Merger TrackMerger {
 }
 
 
+################################                                                                    
+# Track impact parameter smearing                                                                   
+################################                                                                    
+
+module TrackSmearing TrackSmearing {
+  set InputArray TrackMerger/tracks
+#  set BeamSpotInputArray BeamSpotFilter/beamSpotParticle
+  set OutputArray tracks
+#  set ApplyToPileUp true
+
+  # magnetic field
+  set Bz 3.8
+
+  source trackResolutionCMS.tcl
+}
+
 
 #############
 #   ECAL
@@ -210,7 +227,8 @@ module Merger TrackMerger {
 
 module SimpleCalorimeter ECal {
   set ParticleInputArray ParticlePropagator/stableParticles
-  set TrackInputArray TrackMerger/tracks
+  #set TrackInputArray TrackMerger/tracks
+  set TrackInputArray TrackSmearing/tracks
 
   set TowerOutputArray ecalTowers
   set EFlowTrackOutputArray eflowTracks
@@ -610,7 +628,7 @@ module FastJetFinder GenJetFinder {
 
   # algorithm: 1 CDFJetClu, 2 MidPoint, 3 SIScone, 4 kt, 5 Cambridge/Aachen, 6 antikt
   set JetAlgorithm 6
-  set ParameterR 0.5
+  set ParameterR 0.4
 
   set JetPTMin 20.0
 }
@@ -639,7 +657,7 @@ module FastJetFinder FastJetFinder {
 
   # algorithm: 1 CDFJetClu, 2 MidPoint, 3 SIScone, 4 kt, 5 Cambridge/Aachen, 6 antikt
   set JetAlgorithm 6
-  set ParameterR 0.5
+  set ParameterR 0.4
 
   set JetPTMin 20.0
 }
@@ -744,7 +762,7 @@ module TauTagging TauTagging {
   set PartonInputArray Delphes/partons
   set JetInputArray JetEnergyScale/jets
 
-  set DeltaR 0.5
+  set DeltaR 0.4
 
   set TauPTMin 1.0
 
@@ -783,7 +801,8 @@ module TreeWriter TreeWriter {
 # add Branch InputArray BranchName BranchClass
   add Branch Delphes/allParticles Particle GenParticle
 
-  add Branch TrackMerger/tracks Track Track
+  #add Branch TrackMerger/tracks Track Track
+  add Branch TrackSmearing/tracks Track Track
   add Branch Calorimeter/towers Tower Tower
 
   add Branch HCal/eflowTracks EFlowTrack Track
