@@ -30,11 +30,17 @@ $HEPTOOL/MG5aMC_PY8_interface/MG5aMC_PY8_interface {4}
 #Delphes
 cp {5} .
 cp {6} .
-$VFS_PACKAGE_PATH/HepMCTool/DelphesHepMC2 {7} output-$2.root tag_1_pythia8_events.hepmc
+$VFS_PACKAGE_PATH/HepMCTool/DelphesHepMC2 {7} output.root tag_1_pythia8_events.hepmc
+
+#Extraction of jet feature
+root -l -q $VFS_PACKAGE_PATH/script/jetExtractor.C'("output.root")'
+mv output_jet.root ../output_jet-$2.root
 
 # Save storgae
-rm events.lhe.gz
-rm tag_1_pythia8_events.hepmc
+cd ../
+rm -rf job-$2
+#rm events.lhe.gz
+#rm tag_1_pythia8_events.hepmc
 
 
 """
