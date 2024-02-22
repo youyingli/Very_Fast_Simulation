@@ -52,6 +52,7 @@ output      = {0}/output/runjob.$(ClusterId).$(ProcId).out
 error       = {0}/error/runjob.$(ClusterId).$(ProcId).err
 log         = {0}/log/htc.log
 
+max_materialize = 20
 max_retries = 1
 queue {1}
 """
