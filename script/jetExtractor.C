@@ -151,6 +151,7 @@ void jetExtractor(const char *inputFile)
 
             auto jet = (Jet*) branchJet->At(i);
 
+            if ( jet->PT < 30. ) continue;
             if ( fabs(jet->Eta) > 2.4 ) continue;
             if ( jet->NCharged < 1 ) continue;
             if ( jet->Constituents.GetEntriesFast() < 2 ) continue;

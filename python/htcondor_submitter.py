@@ -22,7 +22,7 @@ cd $1/job-$2
 
 # Madgraph5
 tar zxf {2}
-./run.sh {3} $(($1+$2))
+./run.sh {3} $(($1*$2))
 
 #Pythia8
 $HEPTOOL/MG5aMC_PY8_interface/MG5aMC_PY8_interface {4}
