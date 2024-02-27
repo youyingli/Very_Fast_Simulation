@@ -14,7 +14,6 @@ set ExecutionPath {
   MuonMomentumSmearing
 
   TrackMerger
-  TrackSmearing
  
   ECal
   HCal
@@ -145,15 +144,18 @@ module Efficiency MuonTrackingEfficiency {
 # Momentum resolution for charged tracks
 ########################################
 
-module MomentumSmearing ChargedHadronMomentumSmearing {
+module TrackSmearing ChargedHadronMomentumSmearing {
   set InputArray ChargedHadronTrackingEfficiency/chargedHadrons
   set OutputArray chargedHadrons
+
+  set Bz 3.8
+  source trackResolutionCMS.tcl
 
   # set ResolutionFormula {resolution formula as a function of eta and pt}
 
   # resolution formula for charged hadrons
   # based on arXiv:1405.6569
-  set ResolutionFormula {                  (abs(eta) <= 0.5) * (pt > 0.1) * sqrt(0.06^2 + pt^2*1.3e-3^2) +
+  set PResolutionFormula {                  (abs(eta) <= 0.5) * (pt > 0.1) * sqrt(0.06^2 + pt^2*1.3e-3^2) +
                          (abs(eta) > 0.5 && abs(eta) <= 1.5) * (pt > 0.1) * sqrt(0.10^2 + pt^2*1.7e-3^2) +
                          (abs(eta) > 1.5 && abs(eta) <= 2.5) * (pt > 0.1) * sqrt(0.25^2 + pt^2*3.1e-3^2)}
 }
@@ -162,15 +164,18 @@ module MomentumSmearing ChargedHadronMomentumSmearing {
 # Momentum resolution for electrons
 ###################################
 
-module MomentumSmearing ElectronMomentumSmearing {
+module TrackSmearing ElectronMomentumSmearing {
   set InputArray ElectronTrackingEfficiency/electrons
   set OutputArray electrons
+
+  set Bz 3.8
+  source trackResolutionCMS.tcl
 
   # set ResolutionFormula {resolution formula as a function of eta and energy}
 
   # resolution formula for electrons
   # based on arXiv:1502.02701
-  set ResolutionFormula {                  (abs(eta) <= 0.5) * (pt > 0.1) * sqrt(0.03^2 + pt^2*1.3e-3^2) +
+  set PResolutionFormula {                  (abs(eta) <= 0.5) * (pt > 0.1) * sqrt(0.03^2 + pt^2*1.3e-3^2) +
                          (abs(eta) > 0.5 && abs(eta) <= 1.5) * (pt > 0.1) * sqrt(0.05^2 + pt^2*1.7e-3^2) +
                          (abs(eta) > 1.5 && abs(eta) <= 2.5) * (pt > 0.1) * sqrt(0.15^2 + pt^2*3.1e-3^2)}
 }
@@ -179,14 +184,17 @@ module MomentumSmearing ElectronMomentumSmearing {
 # Momentum resolution for muons
 ###############################
 
-module MomentumSmearing MuonMomentumSmearing {
+module TrackSmearing MuonMomentumSmearing {
   set InputArray MuonTrackingEfficiency/muons
   set OutputArray muons
+
+  set Bz 3.8
+  source trackResolutionCMS.tcl
 
   # set ResolutionFormula {resolution formula as a function of eta and pt}
 
   # resolution formula for muons
-  set ResolutionFormula {                  (abs(eta) <= 0.5) * (pt > 0.1) * sqrt(0.01^2 + pt^2*1.0e-4^2) +
+  set PResolutionFormula {                  (abs(eta) <= 0.5) * (pt > 0.1) * sqrt(0.01^2 + pt^2*1.0e-4^2) +
                          (abs(eta) > 0.5 && abs(eta) <= 1.5) * (pt > 0.1) * sqrt(0.015^2 + pt^2*1.5e-4^2) +
                          (abs(eta) > 1.5 && abs(eta) <= 2.5) * (pt > 0.1) * sqrt(0.025^2 + pt^2*3.5e-4^2)}
 }
@@ -204,22 +212,6 @@ module Merger TrackMerger {
 }
 
 
-################################                                                                    
-# Track impact parameter smearing                                                                   
-################################                                                                    
-
-module TrackSmearing TrackSmearing {
-  set InputArray TrackMerger/tracks
-#  set BeamSpotInputArray BeamSpotFilter/beamSpotParticle
-  set OutputArray tracks
-#  set ApplyToPileUp true
-
-  # magnetic field
-  set Bz 3.8
-
-  source trackResolutionCMS.tcl
-}
-
 
 #############
 #   ECAL
@@ -227,8 +219,7 @@ module TrackSmearing TrackSmearing {
 
 module SimpleCalorimeter ECal {
   set ParticleInputArray ParticlePropagator/stableParticles
-  #set TrackInputArray TrackMerger/tracks
-  set TrackInputArray TrackSmearing/tracks
+  set TrackInputArray TrackMerger/tracks
 
   set TowerOutputArray ecalTowers
   set EFlowTrackOutputArray eflowTracks
@@ -801,8 +792,7 @@ module TreeWriter TreeWriter {
 # add Branch InputArray BranchName BranchClass
   add Branch Delphes/allParticles Particle GenParticle
 
-  #add Branch TrackMerger/tracks Track Track
-  add Branch TrackSmearing/tracks Track Track
+  add Branch TrackMerger/tracks Track Track
   add Branch Calorimeter/towers Tower Tower
 
   add Branch HCal/eflowTracks EFlowTrack Track
