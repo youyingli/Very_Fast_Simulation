@@ -31,9 +31,37 @@ SigmaTotal:sigmaEl = 21.89
 SigmaTotal:sigmaTot = 100.309
 PDF:pSet=LHAPDF6:NNPDF31_nnlo_as_0118
 
-! Turn Off jet matching
-JetMatching:etaJetMax=1.0000000000e+03
-JetMatching:setMad=off
+! NLO
+SpaceShower:pTmaxMatch = 1
+SpaceShower:pTmaxFudge = 1
+SpaceShower:MEcorrections = off
+TimeShower:pTmaxMatch = 1
+TimeShower:pTmaxFudge = 1
+TimeShower:MEcorrections = off
+TimeShower:globalRecoil = on
+TimeShower:limitPTmaxGlobal = on
+TimeShower:nMaxGlobalRecoil = 1
+TimeShower:globalRecoilMode = 2
+TimeShower:nMaxGlobalBranch = 1
+TimeShower:weightGluonToQuark = 1
+
+! FxFx and Higgs to diphoton
+JetMatching:setMad = off
+JetMatching:scheme = 1
+!JetMatching:merge = on
+JetMatching:jetAlgorithm = 2
+JetMatching:etaJetMax = 999.
+JetMatching:coneRadius = 1.
+JetMatching:slowJetPower = 1
+JetMatching:qCut = 30.
+JetMatching:doFxFx = on
+JetMatching:qCutME = 10.
+JetMatching:nQmatch = 5
+JetMatching:nJetMax = 2
+SLHA:useDecayTable = off
+25:m0 = 125
+25:onMode = off
+25:onIfMatch = 22 22
 
 ! IO control
 LHEFInputs:nSubruns=1
@@ -42,5 +70,5 @@ Main:subrun=0
 Main:numberOfEvents= NEVENTS
 Beams:LHEF         = events.lhe.gz
 Beams:frameType    =4
-HEPMCoutput:file   = tag_1_pythia8_events.hepmc
+HEPMCoutput:file   = PATH/tag_1_pythia8_events.hepmc
 HEPMCoutput:scaling=1.0000000000e+09

@@ -29,21 +29,21 @@ cd $BACKUP_PATH
 
 ########################M A D G R A P H___P Y T H I A 8___I N T E R F A C E###################
 
-if [ ! -f $INSTALL_PATH/MG5_aMC_v3_5_3/HEPTools/MG5aMC_PY8_interface/MG5aMC_PY8_interface ]; then
+if [ ! -f $INSTALL_PATH/MG5_aMC_v2_9_21/HEPTools/MG5aMC_PY8_interface/MG5aMC_PY8_interface ]; then
     echo "[INFO] : M A D G R A P H___P Y T H I A 8___I N T E R F A C E can not be found."
     echo "[INFO] : Start to download M A D G R A P H___P Y T H I A 8___I N T E R F A C E ..."
     echo
 
     cd $INSTALL_PATH
-    wget https://launchpad.net/mg5amcnlo/3.0/3.5.x/+download/MG5_aMC_v3.5.3.tar.gz
-    tar -zxf MG5_aMC_v3.5.3.tar.gz
-    rm MG5_aMC_v3.5.3.tar.gz
-    cd $INSTALL_PATH/MG5_aMC_v3_5_3
+    wget https://launchpad.net/mg5amcnlo/lts/2.9.x/+download/MG5_aMC_v2.9.21.tar.gz
+    tar -zxf MG5_aMC_v2.9.21.tar.gz
+    rm MG5_aMC_v2.9.21.tar.gz
+    cd $INSTALL_PATH/MG5_aMC_v2_9_21
     
     OLD_LHAPDF="# lhapdf_py3 = lhapdf-config"
     NEW_LHAPDF=" lhapdf_py3 = /cvmfs/sft.cern.ch/lcg/releases/MCGenerators/lhapdf/6.5.3-3fa11/x86_64-centos7-gcc12-opt/bin/lhapdf-config"
-    sed -e "s@$OLD_LHAPDF@$NEW_LHAPDF@g" $INSTALL_PATH/MG5_aMC_v3_5_3/input/.mg5_configuration_default.txt > \
-        $INSTALL_PATH/MG5_aMC_v3_5_3/input/mg5_configuration.txt
+    sed -e "s@$OLD_LHAPDF@$NEW_LHAPDF@g" $INSTALL_PATH/MG5_aMC_v2_9_21/input/.mg5_configuration_default.txt > \
+        $INSTALL_PATH/MG5_aMC_v2_9_21/input/mg5_configuration.txt
 
     echo
     echo "# Package for associated with Madgraph5" > $INSTALL_PATH/install_list

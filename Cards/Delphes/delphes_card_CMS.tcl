@@ -487,11 +487,11 @@ module Isolation PhotonIsolation {
 
   set OutputArray photons
 
-  set DeltaRMax 0.5
+  set DeltaRMax 0.3
 
   set PTMin 0.5
 
-  set PTRatioMax 0.12
+  set PTRatioMax 9999.0
 }
 
 

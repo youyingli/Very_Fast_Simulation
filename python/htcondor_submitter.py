@@ -9,7 +9,7 @@ run_script="""#!/bin/bash
 
 #PATH env setup
 VFS_PACKAGE_PATH={0}
-HEPTOOL=$VFS_PACKAGE_PATH/HepMCTool/MG5_aMC_v3_5_3/HEPTools
+HEPTOOL=$VFS_PACKAGE_PATH/HepMCTool/MG5_aMC_v2_9_21/HEPTools
 
 source $VFS_PACKAGE_PATH/env_setup.sh
 PYTHIA8=$HEPTOOL/pythia8
@@ -45,12 +45,65 @@ rm -rf job-$2
 
 """
 
+
+run_script_nlo="""#!/bin/bash
+
+#PATH env setup
+VFS_PACKAGE_PATH={0}
+HEPTOOL=$VFS_PACKAGE_PATH/HepMCTool/MG5_aMC_v2_9_21/HEPTools
+
+source $VFS_PACKAGE_PATH/env_setup.sh
+PYTHIA8=$HEPTOOL/pythia8
+PYTHIA8DATA=$HEPTOOL/pythia8/share/Pythia8/xmldoc
+
+cd $VFS_PACKAGE_PATH/submission/{1}
+
+mkdir -p $1/job-$2
+cd $1/job-$2
+
+# Madgraph5
+tar zxf {2}
+sed -i 's/NEVENTS/{3}/g' Cards/run_card.dat
+sed -i "s/SEED/$(($1*$2))/g" Cards/run_card.dat
+./bin/generate_events --nocompile --only_generation
+mv Events/run_01/events.lhe.gz . 
+rm -rf SubProcesses # Clean Up.
+
+#Pythia8
+mkdir -p $TEMP/submission/$1/job-$2
+sed -e 's/NEVENTS/{3}/g' {4} > pythia8.dat
+sed -i "s|PATH|$TEMP/submission/$1/job-$2|g" pythia8.dat
+$HEPTOOL/MG5aMC_PY8_interface/MG5aMC_PY8_interface pythia8.dat
+
+#Delphes
+cp {5} .
+cp {6} .
+$VFS_PACKAGE_PATH/HepMCTool/DelphesHepMC2 {7} $TEMP/submission/$1/job-$2/output.root $TEMP/submission/$1/job-$2/tag_1_pythia8_events.hepmc
+
+#Extraction of jet feature
+root -l -q "$VFS_PACKAGE_PATH/script/dipho_dijet_Extractor.C(\\"$TEMP/submission/$1/job-$2/output.root\\")"
+mv output_dipho_dijet.root $TEMP/submission/$1/output-$2.root
+
+# Save storgae
+cd ../
+rm -rf job-$2
+rm -rf $TEMP/submission/$1/job-$2
+#rm events.lhe.gz
+#rm tag_1_pythia8_events.hepmc
+
+
+"""
+
 HTCondorConfig="""executable  = {0}/runjobs.sh
 arguments   = $(ClusterId) $(ProcId)
 
 output      = {0}/output/runjob.$(ClusterId).$(ProcId).out
 error       = {0}/error/runjob.$(ClusterId).$(ProcId).err
 log         = {0}/log/htc.log
+
+request_cpus = 4
+request_memory = 24GB 
++JobFlavour = "large"
 
 max_materialize = 20
 max_retries = 1
@@ -94,6 +147,10 @@ def Option_Parser(argv):
             type='str', dest='delphes_card_support', default=str(os.environ.get('VFSIM_PACKAGE_PATH')) + '/Cards/Delphes/trackResolutionCMS.tcl',
             help='Supported datacard needed when running the detector simulation by Delphes3'
             )
+    parser.add_option('--isNLO',
+            action='store_true', dest='isNLO',
+            help='Is NLO'
+            )
 
     (options, args) = parser.parse_args(argv)
     return options
@@ -110,7 +167,7 @@ def HTCondor (argv):
 
     with open(f'{job_path}/runjobs.sh', 'w') as job_script :
 
-        job_script.write(run_script.format(
+        job_script.write(globals()['run_script_nlo' if options.isNLO else 'run_script'].format(
                             package_path,
                             options.tag,
                             options.madgraph_gridpack,
@@ -135,7 +192,7 @@ def HTCondor (argv):
         os.system(f'mkdir -p {job_path}/output')
         os.system(f'mkdir -p {job_path}/log')
 
-    os.system(f'condor_submit {job_path}/runjobs.sub')
+#    os.system(f'condor_submit {job_path}/runjobs.sub')
 
 
 if  __name__ == '__main__':

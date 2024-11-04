@@ -31,6 +31,28 @@ SigmaTotal:sigmaEl = 21.89
 SigmaTotal:sigmaTot = 100.309
 PDF:pSet=LHAPDF6:NNPDF31_nnlo_as_0118
 
+! NLO
+SpaceShower:pTmaxMatch = 1
+SpaceShower:pTmaxFudge = 1
+SpaceShower:MEcorrections = off
+TimeShower:pTmaxMatch = 1
+TimeShower:pTmaxFudge = 1
+TimeShower:MEcorrections = off
+TimeShower:globalRecoil = on
+TimeShower:limitPTmaxGlobal = on
+TimeShower:nMaxGlobalRecoil = 1
+TimeShower:globalRecoilMode = 2
+TimeShower:nMaxGlobalBranch = 1
+TimeShower:weightGluonToQuark = 1
+
+! Higgs to diphoton
+! number of coloured particles (before resonance decays) in born matrix element
+TimeShower:nPartonsInBorn = 2
+SLHA:useDecayTable = off
+25:m0 = 125
+25:onMode = off
+25:onIfMatch = 22 22
+
 ! Turn Off jet matching
 JetMatching:etaJetMax=1.0000000000e+03
 JetMatching:setMad=off
@@ -42,5 +64,5 @@ Main:subrun=0
 Main:numberOfEvents= NEVENTS
 Beams:LHEF         = events.lhe.gz
 Beams:frameType    =4
-HEPMCoutput:file   = tag_1_pythia8_events.hepmc
+HEPMCoutput:file   = PATH/tag_1_pythia8_events.hepmc
 HEPMCoutput:scaling=1.0000000000e+09
