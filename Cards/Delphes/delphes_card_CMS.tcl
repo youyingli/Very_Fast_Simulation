@@ -795,9 +795,10 @@ module TreeWriter TreeWriter {
   add Branch TrackMerger/tracks Track Track
   add Branch Calorimeter/towers Tower Tower
 
-  add Branch HCal/eflowTracks EFlowTrack Track
-  add Branch ECal/eflowPhotons EFlowPhoton Tower
-  add Branch HCal/eflowNeutralHadrons EFlowNeutralHadron Tower
+#  add Branch HCal/eflowTracks EFlowTrack Track
+#  add Branch ECal/eflowPhotons EFlowPhoton Tower
+#  add Branch HCal/eflowNeutralHadrons EFlowNeutralHadron Tower
+  add Branch EFlowMerger/eflow ParticleFlowCandidate ParticleFlowCandidate
 
   add Branch GenJetFinder/jets GenJet Jet
   add Branch GenMissingET/momentum GenMissingET MissingET
