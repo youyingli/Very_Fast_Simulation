@@ -40,6 +40,7 @@ struct InputFeature
     double event_phi;
     double event_mass;
     double event_energy;
+    double event_vtx_z;
 
 
 };
@@ -65,6 +66,7 @@ struct InputFeature_PF
     double PF_sigmadz;
 
     int PF_JetIndex;
+    double PF_vtx_trk_z;
 };
 
 struct InputFeature_Object
@@ -144,6 +146,7 @@ void  event_Extractor(const char *inputFile)
     std::vector<double> PF_sigmad0      ; 
     std::vector<double> PF_sigmadz      ; 
     std::vector<int>    PF_JetIndex     ; 
+    std::vector<double> PF_vtx_trk_z    ; 
 
     TChain *chain = new TChain("Delphes");
     chain->Add(inputFile);
@@ -154,6 +157,7 @@ void  event_Extractor(const char *inputFile)
     TClonesArray *branchPhoton = treeReader->UseBranch("Photon");
     TClonesArray *branchJet = treeReader->UseBranch("Jet");
     TClonesArray *branchMET = treeReader->UseBranch("MissingET");
+    TClonesArray *branchVertex = treeReader->UseBranch("Vertex");
 
     TFile* file = TFile::Open("output_events.root", "recreate");
     TTree* tree = new TTree("Events", "");
@@ -180,6 +184,7 @@ void  event_Extractor(const char *inputFile)
     tree->Branch( "event_phi"               , &dipho_dijet_vars.event_phi              , "event_phi/D"             );
     tree->Branch( "event_mass"              , &dipho_dijet_vars.event_mass             , "event_mass/D"            );
     tree->Branch( "event_energy"            , &dipho_dijet_vars.event_energy           , "event_energy/D"          );
+    tree->Branch( "event_vtx_z"             , &dipho_dijet_vars.event_vtx_z            , "event_vtx_z/D"           );
 
     tree->Branch( "Object_pt"         , &Object_pt         ); 
     tree->Branch( "Object_eta"        , &Object_eta        ); 
@@ -209,6 +214,7 @@ void  event_Extractor(const char *inputFile)
     tree->Branch( "PF_sigmad0"        , &PF_sigmad0        );
     tree->Branch( "PF_sigmadz"        , &PF_sigmadz        );
     tree->Branch( "PF_JetIndex"       , &PF_JetIndex       );
+    tree->Branch( "PF_vtx_trk_z"      , &PF_vtx_trk_z      );
 
     // Loop over all events
     for(int entry = 0; entry < treeReader->GetEntries(); ++entry) {
@@ -224,6 +230,8 @@ void  event_Extractor(const char *inputFile)
             InputFeature_PF PFCandFeature;
 
             auto PFCand = (ParticleFlowCandidate*) branchPFCandicate->At(i);
+
+            if (fabs(PFCand->Eta) > 100.) continue;
 
             PFCandFeature.PF_pt               = PFCand->PT;
             PFCandFeature.PF_eta              = PFCand->Eta;
@@ -242,6 +250,8 @@ void  event_Extractor(const char *inputFile)
 
             // Assign PF_JetIndex as -1 first
             PFCandFeature.PF_JetIndex         = -1;
+
+            PFCandFeature.PF_vtx_trk_z        = PFCand->Z;
 
             PF_cands_mapping[PFCand] = PFCandFeature;
 
@@ -400,6 +410,13 @@ void  event_Extractor(const char *inputFile)
         dipho_dijet_vars.event_mass   = event_p4.M()      ;
         dipho_dijet_vars.event_energy = event_p4.Energy() ;
 
+        // If PU in events, remove events without any vertex
+        dipho_dijet_vars.event_vtx_z = 0.;
+        if ( branchVertex != nullptr ) {
+            if ( branchVertex->GetEntriesFast() == 0 ) continue;
+            dipho_dijet_vars.event_vtx_z = ((Vertex*)branchVertex->At(0))->Z;
+        }
+
     	std::vector<InputFeature_PF> PF_cands;
         for (const auto& it : PF_cands_mapping) PF_cands.emplace_back( it.second );
         std::sort(PF_cands.begin(), PF_cands.end(), pt_sortor());
@@ -433,6 +450,7 @@ void  event_Extractor(const char *inputFile)
         PF_sigmad0      .clear(); 
         PF_sigmadz      .clear(); 
         PF_JetIndex     .clear(); 
+        PF_vtx_trk_z    .clear(); 
 
         // MET is put in the first element
         Object_pt         .emplace_back( ((MissingET*) branchMET->At(0))->MET ); 
@@ -463,6 +481,7 @@ void  event_Extractor(const char *inputFile)
         PF_sigmad0        .emplace_back( 0.                                                     ); 
         PF_sigmadz        .emplace_back( 0.                                                     ); 
         PF_JetIndex       .emplace_back( -1                                                     ); 
+        PF_vtx_trk_z      .emplace_back( 0.                                                     ); 
 
         for (const auto it : Objects) {
 
@@ -497,6 +516,7 @@ void  event_Extractor(const char *inputFile)
             PF_sigmad0        .emplace_back( it.PF_sigmad0                    ); 
             PF_sigmadz        .emplace_back( it.PF_sigmadz                    ); 
             PF_JetIndex       .emplace_back( it.PF_JetIndex                   ); 
+            PF_vtx_trk_z      .emplace_back( it.PF_vtx_trk_z                  ); 
         }
 
         tree->Fill();
