@@ -36,11 +36,13 @@ JetMatching:etaJetMax=1.0000000000e+03
 JetMatching:setMad=off
 
 ! IO control
+Random:setSeed = on
+Random:seed = SEED
 LHEFInputs:nSubruns=1
 Main:subrun=0
 
 Main:numberOfEvents= NEVENTS
 Beams:LHEF         = events.lhe.gz
 Beams:frameType    =4
-HEPMCoutput:file   = tag_1_pythia8_events.hepmc
+HEPMCoutput:file   = PATH/tag_1_pythia8_events.hepmc
 HEPMCoutput:scaling=1.0000000000e+09

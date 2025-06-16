@@ -64,6 +64,8 @@ SLHA:useDecayTable = off
 25:onIfMatch = 22 22
 
 ! IO control
+Random:setSeed = on
+Random:seed = SEED
 LHEFInputs:nSubruns=1
 Main:subrun=0
 

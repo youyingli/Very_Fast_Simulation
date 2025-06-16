@@ -1,3 +1,6 @@
+# Set random seed
+set RandomSeed SEED
+
 #######################################
 # Order of execution of various modules
 #######################################
@@ -75,7 +78,7 @@ module PileUpMerger PileUpMerger {
   set VertexOutputArray vertices
 
   # pre-generated minbias input file
-  set PileUpFile /dicos_ui_home/youying/JetTagger/generator_nlo/Very_Fast_Simulation/data/MinBias_100K.pileup
+  set PileUpFile /dicos_ui_home/youying/JetTagger/generator_nlo/Very_Fast_Simulation/data/MinBias_100K2.pileup
 
   # average expected pile up
   set MeanPileUp 35
@@ -589,13 +592,9 @@ module Isolation PhotonIsolation {
 
   set OutputArray photons
 
-  # veto isolation cand. based on proximity to input cand.
-  set DeltaRMin 0.01
-  set UseMiniCone true
-
   set DeltaRMax 0.3
 
-  set PTMin 0.5
+  set PTMin 0.1
 
   set PTRatioMax 9999.0
 }
@@ -630,7 +629,7 @@ module Isolation ElectronIsolation {
 
   set DeltaRMax 0.3
 
-  set PTMin 0.5
+  set PTMin 0.1
 
   set PTRatioMax 9999.0
 }
@@ -662,9 +661,9 @@ module Isolation MuonIsolation {
 
   set OutputArray muons
 
-  set DeltaRMax 0.3
+  set DeltaRMax 0.4
 
-  set PTMin 0.5
+  set PTMin 0.1
 
   set PTRatioMax 9999.0
 }

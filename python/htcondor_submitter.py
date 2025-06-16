@@ -25,26 +25,30 @@ tar zxf {2}
 ./run.sh {3} $(($1*$2))
 
 #Pythia8
-$HEPTOOL/MG5aMC_PY8_interface/MG5aMC_PY8_interface {4}
+mkdir -p $TEMP/submission/{1}/$1/job-$2
+sed -e 's/NEVENTS/{3}/g' {4} > pythia8.dat
+sed -i "s|PATH|$TEMP/submission/{1}/$1/job-$2|g" pythia8.dat
+sed -i "s/SEED/$SEED/g" pythia8.dat
+$HEPTOOL/MG5aMC_PY8_interface/MG5aMC_PY8_interface pythia8.dat
 
 #Delphes
 cp {5} .
 cp {6} .
-$VFS_PACKAGE_PATH/HepMCTool/DelphesHepMC2 {7} output.root tag_1_pythia8_events.hepmc
+sed -i "s/SEED/$SEED/g" {7}
+$VFS_PACKAGE_PATH/HepMCTool/DelphesHepMC2 {7} $TEMP/submission/{1}/$1/job-$2/output.root $TEMP/submission/{1}/$1/job-$2/tag_1_pythia8_events.hepmc
 
 #Extraction of jet feature
-root -l -q $VFS_PACKAGE_PATH/script/jetExtractor.C'("output.root")'
-mv output_jet.root ../output_jet-$2.root
+root -l -q "$VFS_PACKAGE_PATH/script/event_Extractor.C(\\"$TEMP/submission/{1}/$1/job-$2/output.root\\")"
+mv output_events.root $TEMP/submission/{1}/$1/output-$2.root
 
 # Save storgae
 cd ../
 rm -rf job-$2
+rm -rf $TEMP/submission/{1}/$1/job-$2
 #rm events.lhe.gz
 #rm tag_1_pythia8_events.hepmc
 
-
 """
-
 
 run_script_nlo="""#!/bin/bash
 
@@ -55,6 +59,7 @@ HEPTOOL=$VFS_PACKAGE_PATH/HepMCTool/MG5_aMC_v2_9_21/HEPTools
 source $VFS_PACKAGE_PATH/env_setup.sh
 PYTHIA8=$HEPTOOL/pythia8
 PYTHIA8DATA=$HEPTOOL/pythia8/share/Pythia8/xmldoc
+SEED=$(($1*$2))
 
 cd $VFS_PACKAGE_PATH/submission/{1}
 
@@ -64,33 +69,34 @@ cd $1/job-$2
 # Madgraph5
 tar zxf {2}
 sed -i 's/NEVENTS/{3}/g' Cards/run_card.dat
-sed -i "s/SEED/$(($1*$2))/g" Cards/run_card.dat
+sed -i "s/SEED/$SEED/g" Cards/run_card.dat
 ./bin/generate_events --nocompile --only_generation
-mv Events/run_01/events.lhe.gz . 
+mv Events/run_01/events.lhe.gz .
 rm -rf SubProcesses # Clean Up.
 
 #Pythia8
-mkdir -p $TEMP/submission/$1/job-$2
+mkdir -p $TEMP/submission/{1}/$1/job-$2
 sed -e 's/NEVENTS/{3}/g' {4} > pythia8.dat
-sed -i "s|PATH|$TEMP/submission/$1/job-$2|g" pythia8.dat
+sed -i "s|PATH|$TEMP/submission/{1}/$1/job-$2|g" pythia8.dat
+sed -i "s/SEED/$SEED/g" pythia8.dat
 $HEPTOOL/MG5aMC_PY8_interface/MG5aMC_PY8_interface pythia8.dat
 
 #Delphes
 cp {5} .
 cp {6} .
-$VFS_PACKAGE_PATH/HepMCTool/DelphesHepMC2 {7} $TEMP/submission/$1/job-$2/output.root $TEMP/submission/$1/job-$2/tag_1_pythia8_events.hepmc
+sed -i "s/SEED/$SEED/g" {7}
+$VFS_PACKAGE_PATH/HepMCTool/DelphesHepMC2 {7} $TEMP/submission/{1}/$1/job-$2/output.root $TEMP/submission/{1}/$1/job-$2/tag_1_pythia8_events.hepmc
 
 #Extraction of jet feature
-root -l -q "$VFS_PACKAGE_PATH/script/dipho_dijet_Extractor.C(\\"$TEMP/submission/$1/job-$2/output.root\\")"
-mv output_dipho_dijet.root $TEMP/submission/$1/output-$2.root
+root -l -q "$VFS_PACKAGE_PATH/script/event_Extractor.C(\\"$TEMP/submission/{1}/$1/job-$2/output.root\\")"
+mv output_events.root $TEMP/submission/{1}/$1/output-$2.root
 
 # Save storgae
 cd ../
 rm -rf job-$2
-rm -rf $TEMP/submission/$1/job-$2
+rm -rf $TEMP/submission/{1}/$1/job-$2
 #rm events.lhe.gz
 #rm tag_1_pythia8_events.hepmc
-
 
 """
 
@@ -101,11 +107,11 @@ output      = {0}/output/runjob.$(ClusterId).$(ProcId).out
 error       = {0}/error/runjob.$(ClusterId).$(ProcId).err
 log         = {0}/log/htc.log
 
-request_cpus = 4
-request_memory = 24GB 
-+JobFlavour = "large"
+#request_cpus = 4
+#request_memory = 24GB
+#+JobFlavour = "large"
 
-max_materialize = 20
+max_materialize = 40
 max_retries = 1
 queue {1}
 """
@@ -141,6 +147,7 @@ def Option_Parser(argv):
             )
     parser.add_option('--delphes_card',
             type='str', dest='delphes_card', default=str(os.environ.get('VFSIM_PACKAGE_PATH')) + '/Cards/Delphes/delphes_card_CMS.tcl',
+            #type='str', dest='delphes_card', default=str(os.environ.get('VFSIM_PACKAGE_PATH')) + '/Cards/Delphes/delphes_card_CMS_PileUp_Puppi.tcl',
             help='Datacard needed when running the detector simulation by Delphes3'
             )
     parser.add_option('--delphes_card_support',
@@ -192,7 +199,9 @@ def HTCondor (argv):
         os.system(f'mkdir -p {job_path}/output')
         os.system(f'mkdir -p {job_path}/log')
 
-#    os.system(f'condor_submit {job_path}/runjobs.sub')
+        print( f'{job_path}/runjobs.sub' )
+
+    os.system(f'condor_submit {job_path}/runjobs.sub')
 
 
 if  __name__ == '__main__':

@@ -45,17 +45,29 @@ TimeShower:globalRecoilMode = 2
 TimeShower:nMaxGlobalBranch = 1
 TimeShower:weightGluonToQuark = 1
 
-! Higgs to diphoton
-! number of coloured particles (before resonance decays) in born matrix element
-TimeShower:nPartonsInBorn = 2
+! FxFx and Higgs to diphoton
+JetMatching:setMad = off
+JetMatching:scheme = 1
+!JetMatching:merge = on
+JetMatching:jetAlgorithm = 2
+JetMatching:etaJetMax = 999.
+JetMatching:coneRadius = 1.
+JetMatching:slowJetPower = 1
+JetMatching:qCut = 30.
+JetMatching:doFxFx = on
+JetMatching:qCutME = 10.
+JetMatching:nQmatch = 5
+JetMatching:nJetMax = 2
 SLHA:useDecayTable = off
 25:m0 = 125
 25:onMode = off
 25:onIfMatch = 22 22
 
-! Turn Off jet matching
-JetMatching:etaJetMax=1.0000000000e+03
-JetMatching:setMad=off
+24:onMode = off
+23:onMode = off
+24:onIfAny = 1 2 3 4 5
+23:onIfAny = 1 2 3 4 5
+
 
 ! IO control
 Random:setSeed = on

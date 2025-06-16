@@ -1,3 +1,6 @@
+# Set random seed
+set RandomSeed SEED
+
 #######################################
 # Order of execution of various modules
 #######################################
@@ -489,7 +492,7 @@ module Isolation PhotonIsolation {
 
   set DeltaRMax 0.3
 
-  set PTMin 0.5
+  set PTMin 0.1
 
   set PTRatioMax 9999.0
 }
@@ -522,11 +525,11 @@ module Isolation ElectronIsolation {
 
   set OutputArray electrons
 
-  set DeltaRMax 0.5
+  set DeltaRMax 0.3
 
-  set PTMin 0.5
+  set PTMin 0.1
 
-  set PTRatioMax 0.12
+  set PTRatioMax 9999.0
 }
 
 #################
@@ -556,11 +559,11 @@ module Isolation MuonIsolation {
 
   set OutputArray muons
 
-  set DeltaRMax 0.5
+  set DeltaRMax 0.4
 
-  set PTMin 0.5
+  set PTMin 0.1
 
-  set PTRatioMax 0.25
+  set PTRatioMax 9999.0
 }
 
 ###################
@@ -792,24 +795,24 @@ module TreeWriter TreeWriter {
 # add Branch InputArray BranchName BranchClass
   add Branch Delphes/allParticles Particle GenParticle
 
-  add Branch TrackMerger/tracks Track Track
-  add Branch Calorimeter/towers Tower Tower
+#  add Branch TrackMerger/tracks Track Track
+#  add Branch Calorimeter/towers Tower Tower
 
 #  add Branch HCal/eflowTracks EFlowTrack Track
 #  add Branch ECal/eflowPhotons EFlowPhoton Tower
 #  add Branch HCal/eflowNeutralHadrons EFlowNeutralHadron Tower
   add Branch EFlowMerger/eflow ParticleFlowCandidate ParticleFlowCandidate
 
-  add Branch GenJetFinder/jets GenJet Jet
-  add Branch GenMissingET/momentum GenMissingET MissingET
+#  add Branch GenJetFinder/jets GenJet Jet
+#  add Branch GenMissingET/momentum GenMissingET MissingET
  
   add Branch UniqueObjectFinder/jets Jet Jet
   add Branch UniqueObjectFinder/electrons Electron Electron
   add Branch UniqueObjectFinder/photons Photon Photon
   add Branch UniqueObjectFinder/muons Muon Muon
 
-  add Branch FatJetFinder/jets FatJet Jet
+  #add Branch FatJetFinder/jets FatJet Jet
 
   add Branch MissingET/momentum MissingET MissingET
-  add Branch ScalarHT/energy ScalarHT ScalarHT
+#  add Branch ScalarHT/energy ScalarHT ScalarHT
 }
