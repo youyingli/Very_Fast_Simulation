@@ -78,7 +78,7 @@ module PileUpMerger PileUpMerger {
   set VertexOutputArray vertices
 
   # pre-generated minbias input file
-  set PileUpFile /dicos_ui_home/youying/JetTagger/generator_nlo/Very_Fast_Simulation/data/MinBias_100K2.pileup
+  set PileUpFile PILEUP
 
   # average expected pile up
   set MeanPileUp 35

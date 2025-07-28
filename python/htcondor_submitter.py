@@ -14,6 +14,7 @@ HEPTOOL=$VFS_PACKAGE_PATH/HepMCTool/MG5_aMC_v2_9_21/HEPTools
 source $VFS_PACKAGE_PATH/env_setup.sh
 PYTHIA8=$HEPTOOL/pythia8
 PYTHIA8DATA=$HEPTOOL/pythia8/share/Pythia8/xmldoc
+SEED=$(($1*$2))
 
 cd $VFS_PACKAGE_PATH/submission/{1}
 
@@ -38,8 +39,9 @@ sed -i "s/SEED/$SEED/g" {7}
 $VFS_PACKAGE_PATH/HepMCTool/DelphesHepMC2 {7} $TEMP/submission/{1}/$1/job-$2/output.root $TEMP/submission/{1}/$1/job-$2/tag_1_pythia8_events.hepmc
 
 #Extraction of jet feature
-root -l -q "$VFS_PACKAGE_PATH/script/event_Extractor.C(\\"$TEMP/submission/{1}/$1/job-$2/output.root\\")"
-mv output_events.root $TEMP/submission/{1}/$1/output-$2.root
+#root -l -q "$VFS_PACKAGE_PATH/script/event_Extractor.C(\\"$TEMP/submission/{1}/$1/job-$2/output.root\\")"
+root -l -q "$VFS_PACKAGE_PATH/script/jetExtractor_modify.C(\\"$TEMP/submission/{1}/$1/job-$2/output.root\\")"
+mv output_jet.root $TEMP/submission/{1}/$1/output-$2.root
 
 # Save storgae
 cd ../
@@ -76,6 +78,13 @@ rm -rf SubProcesses # Clean Up.
 
 #Pythia8
 mkdir -p $TEMP/submission/{1}/$1/job-$2
+
+## PileUp ##
+sed -e "s/SEED/$SEED/g" $VFS_PACKAGE_PATH/Cards/pythia8/TuneCP5_MinBias.dat > pythia8_MinBias.dat
+$VFS_PACKAGE_PATH/HepMCTool/MinBiasGen pythia8_MinBias.dat $TEMP/submission/{1}/$1/job-$2/MinBias.hepmc
+hepmc2pileup $TEMP/submission/{1}/$1/job-$2/MinBias.pileup $TEMP/submission/{1}/$1/job-$2/MinBias.hepmc
+rm $TEMP/submission/{1}/$1/job-$2/MinBias.hepmc
+
 sed -e 's/NEVENTS/{3}/g' {4} > pythia8.dat
 sed -i "s|PATH|$TEMP/submission/{1}/$1/job-$2|g" pythia8.dat
 sed -i "s/SEED/$SEED/g" pythia8.dat
@@ -85,6 +94,7 @@ $HEPTOOL/MG5aMC_PY8_interface/MG5aMC_PY8_interface pythia8.dat
 cp {5} .
 cp {6} .
 sed -i "s/SEED/$SEED/g" {7}
+sed -i "s|PILEUP|$TEMP/submission/{1}/$1/job-$2/MinBias.pileup|g" {7}
 $VFS_PACKAGE_PATH/HepMCTool/DelphesHepMC2 {7} $TEMP/submission/{1}/$1/job-$2/output.root $TEMP/submission/{1}/$1/job-$2/tag_1_pythia8_events.hepmc
 
 #Extraction of jet feature
@@ -111,7 +121,7 @@ log         = {0}/log/htc.log
 #request_memory = 24GB
 #+JobFlavour = "large"
 
-max_materialize = 40
+max_materialize = 20
 max_retries = 1
 queue {1}
 """
@@ -146,8 +156,8 @@ def Option_Parser(argv):
             help='Datacard needed when running the pythia8'
             )
     parser.add_option('--delphes_card',
-            type='str', dest='delphes_card', default=str(os.environ.get('VFSIM_PACKAGE_PATH')) + '/Cards/Delphes/delphes_card_CMS.tcl',
-            #type='str', dest='delphes_card', default=str(os.environ.get('VFSIM_PACKAGE_PATH')) + '/Cards/Delphes/delphes_card_CMS_PileUp_Puppi.tcl',
+            #type='str', dest='delphes_card', default=str(os.environ.get('VFSIM_PACKAGE_PATH')) + '/Cards/Delphes/delphes_card_CMS.tcl',
+            type='str', dest='delphes_card', default=str(os.environ.get('VFSIM_PACKAGE_PATH')) + '/Cards/Delphes/delphes_card_CMS_PileUp_Puppi.tcl',
             help='Datacard needed when running the detector simulation by Delphes3'
             )
     parser.add_option('--delphes_card_support',

@@ -72,6 +72,9 @@ else
     echo
 fi
 
+### MinBias Generation ###
+cd $PACKAGE_PATH
+g++ bin/MinBiasGen.cc -o $INSTALL_PATH/MinBiasGen `$INSTALL_PATH/MG5_aMC_v2_9_21/HEPTools/pythia8/bin/pythia8-config --cxxflags --libs` -I$INSTALL_PATH/MG5_aMC_v2_9_21/HEPTools/hepmc/include -L$INSTALL_PATH/MG5_aMC_v2_9_21/HEPTools/hepmc/lib -lHepMC
 
 ##########################D E L P H E S 3#######################################################
 if [ ! -f ${INSTALL_PATH}/DelphesHepMC2 ]; then
