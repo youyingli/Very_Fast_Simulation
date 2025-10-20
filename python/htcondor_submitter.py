@@ -76,7 +76,6 @@ sed -i "s/SEED/$SEED/g" Cards/run_card.dat
 mv Events/run_01/events.lhe.gz .
 rm -rf SubProcesses # Clean Up.
 
-#Pythia8
 mkdir -p $TEMP/submission/{1}/$1/job-$2
 
 ## PileUp ##
@@ -85,6 +84,7 @@ $VFS_PACKAGE_PATH/HepMCTool/MinBiasGen pythia8_MinBias.dat $TEMP/submission/{1}/
 hepmc2pileup $TEMP/submission/{1}/$1/job-$2/MinBias.pileup $TEMP/submission/{1}/$1/job-$2/MinBias.hepmc
 rm $TEMP/submission/{1}/$1/job-$2/MinBias.hepmc
 
+#Pythia8
 sed -e 's/NEVENTS/{3}/g' {4} > pythia8.dat
 sed -i "s|PATH|$TEMP/submission/{1}/$1/job-$2|g" pythia8.dat
 sed -i "s/SEED/$SEED/g" pythia8.dat
@@ -100,6 +100,8 @@ $VFS_PACKAGE_PATH/HepMCTool/DelphesHepMC2 {7} $TEMP/submission/{1}/$1/job-$2/out
 #Extraction of jet feature
 root -l -q "$VFS_PACKAGE_PATH/script/event_Extractor.C(\\"$TEMP/submission/{1}/$1/job-$2/output.root\\")"
 mv output_events.root $TEMP/submission/{1}/$1/output-$2.root
+#root -l -q "$VFS_PACKAGE_PATH/script/jetExtractor_modify.C(\\"$TEMP/submission/{1}/$1/job-$2/output.root\\")"
+#mv output_jet.root $TEMP/submission/{1}/$1/output-$2.root
 
 # Save storgae
 cd ../
@@ -157,11 +159,13 @@ def Option_Parser(argv):
             )
     parser.add_option('--delphes_card',
             #type='str', dest='delphes_card', default=str(os.environ.get('VFSIM_PACKAGE_PATH')) + '/Cards/Delphes/delphes_card_CMS.tcl',
-            type='str', dest='delphes_card', default=str(os.environ.get('VFSIM_PACKAGE_PATH')) + '/Cards/Delphes/delphes_card_CMS_PileUp_Puppi.tcl',
+            #type='str', dest='delphes_card', default=str(os.environ.get('VFSIM_PACKAGE_PATH')) + '/Cards/Delphes/delphes_card_CMS_PileUp_Puppi.tcl',
+            type='str', dest='delphes_card', default=str(os.environ.get('VFSIM_PACKAGE_PATH')) + '/Cards/Delphes/delphes_card_CMS_PhaseII_Puppi.tcl',
             help='Datacard needed when running the detector simulation by Delphes3'
             )
     parser.add_option('--delphes_card_support',
-            type='str', dest='delphes_card_support', default=str(os.environ.get('VFSIM_PACKAGE_PATH')) + '/Cards/Delphes/trackResolutionCMS.tcl',
+            #type='str', dest='delphes_card_support', default=str(os.environ.get('VFSIM_PACKAGE_PATH')) + '/Cards/Delphes/trackResolutionCMS.tcl',
+            type='str', dest='delphes_card_support', default=str(os.environ.get('VFSIM_PACKAGE_PATH')) + '/Cards/Delphes/muonMomentumResolution.tcl',
             help='Supported datacard needed when running the detector simulation by Delphes3'
             )
     parser.add_option('--isNLO',

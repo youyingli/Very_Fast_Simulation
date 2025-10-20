@@ -18,7 +18,7 @@ set ExecutionPath {
   MuonMomentumSmearing
 
   TrackMerger
- 
+
   ECal
   HCal
 
@@ -34,7 +34,6 @@ set ExecutionPath {
 
   EFlowMerger
   EFlowFilter
-  
   PhotonEfficiency
   PhotonIsolation
 
@@ -81,7 +80,7 @@ module PileUpMerger PileUpMerger {
   set PileUpFile PILEUP
 
   # average expected pile up
-  set MeanPileUp 35
+  set MeanPileUp 60
 
    # maximum spread in the beam direction in m
   set ZVertexSpread 0.25
@@ -539,7 +538,7 @@ module RecoPuFilter RunPUPPI {
 
 #####################
 ## Energy flow merger
-######################
+#####################
 
 module Merger EFlowMerger {
 # add InputArray InputArray
@@ -557,7 +556,7 @@ module Merger EFlowMerger {
 module PdgCodeFilter EFlowFilter {
   set InputArray RunPUPPI/PuppiParticles
   set OutputArray eflow
-  
+
   add PdgCode {11}
   add PdgCode {-11}
   add PdgCode {13}
@@ -691,7 +690,6 @@ module Merger ScalarHT {
   set EnergyOutputArray energy
 }
 
-
 #####################
 # Neutrino Filter
 #####################
@@ -711,7 +709,6 @@ module PdgCodeFilter NeutrinoFilter {
   add PdgCode {-16}
 
 }
-
 
 #####################
 # MC truth jet finder
@@ -791,9 +788,6 @@ module FastJetFinder FatJetFinder {
 
   set JetPTMin 200.0
 }
-
-
-
 
 ##################
 # Jet Energy Scale

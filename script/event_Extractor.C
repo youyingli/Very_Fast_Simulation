@@ -243,8 +243,8 @@ void  event_Extractor(const char *inputFile)
             PFCandFeature.PF_isChargedHad     = (double)( PFCand->Charge != 0 && abs(PFCand->PID) != 11 && abs(PFCand->PID) != 13 );
             PFCandFeature.PF_isGamma          = (double)( PFCand->PID == 22 );
             PFCandFeature.PF_isNeutralHad     = (double)( PFCand->PID == 0  );
-            PFCandFeature.PF_tanhd0           = TMath::TanH(PFCand->D0);
-            PFCandFeature.PF_tanhdz           = TMath::TanH(PFCand->DZ);
+            PFCandFeature.PF_tanhd0           = PFCand->D0;
+            PFCandFeature.PF_tanhdz           = PFCand->DZ;
             PFCandFeature.PF_sigmad0          = PFCand->ErrorD0;
             PFCandFeature.PF_sigmadz          = PFCand->ErrorDZ;
 
