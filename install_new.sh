@@ -14,7 +14,7 @@ fi
 echo "[INFO] : Setting environment variables ..."
 STDLIBSETUP="source /cvmfs/sft.cern.ch/lcg/views/LCG_105/x86_64-centos7-gcc12-opt/setup.sh"
 PYTHONSETUP="source /cvmfs/sft.cern.ch/lcg/releases/LCG_105/Python/3.9.12/x86_64-centos7-gcc12-opt/Python-env.sh"
-EXTRALIB="export LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:/dicos_ui_home/youying/.local/lib"
+EXTRALIB="export LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:\$HOME/.local/lib"
 echo "#!/bin/bash" > $PACKAGE_PATH/env_setup.sh
 chmod 755 $PACKAGE_PATH/env_setup.sh
 $STDLIBSETUP && echo $STDLIBSETUP >> $PACKAGE_PATH/env_setup.sh
